@@ -1,0 +1,31 @@
+[Unit]
+Description=LibLocker RFID Locker Management System
+After=network.target
+
+[Service]
+Type=exec
+User=liblocker
+WorkingDirectory=/home/liblocker/liblocker
+EnvironmentFile=/home/liblocker/liblocker/.env
+
+ExecStart=/home/liblocker/liblocker/.venv/bin/gunicorn \
+    --workers 1 \
+    --threads 8 \
+    --bind 0.0.0.0:5000 \
+    --timeout 120 \
+    --access-logfile - \
+    wsgi:app
+
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=30
+TimeoutStopSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=liblocker
+
+# Hardware access groups (GPIO · SPI · I2C · Camera)
+SupplementaryGroups=gpio spi i2c video
+
+[Install]
+WantedBy=multi-user.target

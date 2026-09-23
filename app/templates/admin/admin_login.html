@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibLocker Admin - Secure Login</title>
+  <link rel="icon" type="image/png" href="{{ url_for('kiosk.assets', filename='img/logo.png') }}">
+  <link rel="shortcut icon" type="image/png" href="{{ url_for('kiosk.assets', filename='img/logo.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('kiosk.assets', filename='img/logo.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+  <style>
+  /* ═════════════════════════════════════════════════════════════════════════
+     LIBLOCKER ADMIN LOGIN – Secure, Modern, Accessible
+     Matches admin dashboard design system exactly
+  ═════════════════════════════════════════════════════════════════════════ */
+
+  :root {
+    /* Color System */
+    --bg:            #f2f5f2;
+    --bg-card:       #ffffff;
+    --sidebar-bg:    #1a2e1f;
+    --accent:        #2e7d32;
+    --accent-2:      #4caf50;
+    --accent-hover:  #256427;
+    --red:           #e05252;
+    --red-bg:        rgba(224,82,82,0.10);
+    --amber:         #f59e0b;
+    --amber-bg:      rgba(245,158,11,0.10);
+    --text-1:        #111c14;
+    --text-2:        #3d5140;
+    --text-3:        #7a9080;
+    --border:        rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --shadow-xs:     0 1px 2px rgba(0,0,0,0.06);
+    --shadow-sm:     0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md:     0 4px 20px rgba(0,0,0,0.10);
+    --shadow-lg:     0 8px 40px rgba(0,0,0,0.12);
+    --radius-sm:     8px;
+    --radius-md:     12px;
+    --radius-lg:     16px;
+    --font:          'Plus Jakarta Sans', system-ui, sans-serif;
+    --ease:          cubic-bezier(0.4,0,0.2,1);
+    --dur:           0.2s;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 14px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font);
+    background: linear-gradient(135deg, #f8fffa 0%, #eef6ee 50%, #e9f0e9 100%);
+    color: var(--text-1);
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     BACKGROUND EFFECTS
+  ───────────────────────────────────────────────────────────────────────── */
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: -120px -160px auto -160px;
+    height: 520px;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(46, 125, 50, 0.15) 0%,
+      rgba(46, 125, 50, 0.08) 35%,
+      rgba(46, 125, 50, 0.00) 70%
+    );
+    filter: blur(20px);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     MAIN CONTAINER
+  ───────────────────────────────────────────────────────────────────────── */
+
+  .login-container {
+    width: 100%;
+    max-width: 420px;
+    animation: fadeInUp 0.6s var(--ease);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     CARD
+  ───────────────────────────────────────────────────────────────────────── */
+
+  .login-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     HEADER / BRANDING
+  ───────────────────────────────────────────────────────────────────────── */
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .login-logo {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    background: #ffffff;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(46, 125, 50, 0.18);
+    display: grid;
+    place-items: center;
+    box-shadow:
+      0 6px 18px rgba(46, 125, 50, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    overflow: hidden;
+    animation: scaleIn 0.6s var(--ease) 0.1s backwards;
+  }
+
+  .login-logo img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    display: block;
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .login-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-1);
+    margin: 0 0 8px;
+    letter-spacing: -0.3px;
+  }
+
+  .login-subtitle {
+    font-size: 13px;
+    color: var(--text-3);
+    margin: 0;
+    font-weight: 500;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     FORM
+  ───────────────────────────────────────────────────────────────────────── */
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Form Group */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    animation: slideIn 0.6s var(--ease);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .form-group:nth-child(1) { animation-delay: 0.15s; }
+  .form-group:nth-child(2) { animation-delay: 0.25s; }
+  .form-group:nth-child(3) { animation-delay: 0.35s; }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* Input Fields */
+  .form-input {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: var(--font);
+    font-size: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: #fafbfa;
+    color: var(--text-1);
+    transition: all var(--dur) var(--ease);
+    outline: none;
+  }
+
+  .form-input::placeholder {
+    color: var(--text-3);
+  }
+
+  .form-input:hover {
+    border-color: var(--border-strong);
+    background: white;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.08);
+  }
+
+  .form-input:disabled {
+    background: #f5f5f5;
+    color: var(--text-3);
+    cursor: not-allowed;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     ERROR MESSAGES
+  ───────────────────────────────────────────────────────────────────────── */
+
+  .error-box {
+    padding: 12px 14px;
+    background: var(--red-bg);
+    border: 1px solid rgba(224, 82, 82, 0.25);
+    border-radius: var(--radius-sm);
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 500;
+    animation: shake 0.4s var(--ease), fadeIn 0.3s var(--ease);
+    margin-bottom: 8px;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .error-icon {
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     BUTTONS
+  ───────────────────────────────────────────────────────────────────────── */
+
+  .login-button {
+    width: 100%;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--dur) var(--ease);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.20);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(-100%);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .login-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.30);
+    transform: translateY(-2px);
+  }
+
+  .login-button:hover:not(:disabled)::before {
+    transform: translateX(100%);
+  }
+
+  .login-button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .login-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .login-button .spinner {
+    display: none;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .login-button.loading .spinner {
+    display: inline-block;
+  }
+
+  .login-button.loading {
+    pointer-events: none;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     LOCK MESSAGE
+  ───────────────────────────────────────────────────────────────────────── */
+
+  .lockout-info {
+    padding: 14px 12px;
+    background: var(--amber-bg);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: var(--radius-sm);
+    color: #9a6c14;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .lockout-countdown {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     FOOTER
+  ───────────────────────────────────────────────────────────────────────── */
+
+  .login-footer {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  .login-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .login-footer a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     RESPONSIVE
+  ───────────────────────────────────────────────────────────────────────── */
+
+  @media (max-width: 480px) {
+    .login-card {
+      padding: 32px 24px;
+    }
+
+    .login-title {
+      font-size: 20px;
+    }
+
+    .login-logo {
+      width: 60px;
+      height: 60px;
+    }
+    .login-logo img {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     ACCESSIBILITY
+  ───────────────────────────────────────────────────────────────────────── */
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: more) {
+    .form-input {
+      border-width: 2px;
+    }
+
+    .login-button {
+      box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+    }
+  }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <!-- Header -->
+      <div class="login-header">
+        <div class="login-logo">
+          <img src="{{ url_for('kiosk.assets', filename='img/logo.png') }}" alt="LibLocker">
+        </div>
+        <h1 class="login-title">LibLocker Admin</h1>
+        <p class="login-subtitle">Secure Login Required</p>
+      </div>
+
+      <!-- Lockout Warning -->
+      {% if is_locked %}
+      <div class="lockout-info">
+        ⏱ Account temporarily locked.<br>
+        Try again in <span class="lockout-countdown" id="countdown">{{ lockout_time }}</span>s
+      </div>
+      {% endif %}
+
+      <!-- Error Message -->
+      {% if error %}
+      <div class="error-box">
+        <span class="error-icon">⚠️</span>
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <!-- Login Form -->
+      <form method="POST" class="login-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-input"
+            placeholder="Enter your username"
+            autocomplete="username"
+            autofocus
+            required
+            {% if is_locked %}disabled{% endif %}
+            value="{{ username or '' }}"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-input"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+            {% if is_locked %}disabled{% endif %}
+          >
+        </div>
+
+        {% if next_url %}
+        <input type="hidden" name="next" value="{{ next_url }}">
+        {% endif %}
+
+        <button
+          type="submit"
+          class="login-button"
+          {% if is_locked %}disabled{% endif %}
+          id="submitBtn"
+        >
+          <span class="spinner"></span>
+          <span id="submitText">Sign In</span>
+        </button>
+      </form>
+
+      <!-- Footer Info -->
+      <div class="login-footer">
+        <strong>LibLocker</strong> v2.0<br>
+        Self-Service E-Library Locker System
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // Countdown timer for lockout
+  const countdownEl = document.getElementById('countdown');
+  if (countdownEl) {
+    let remaining = parseInt(countdownEl.textContent);
+
+    const interval = setInterval(() => {
+      remaining--;
+      countdownEl.textContent = remaining;
+
+      if (remaining <= 0) {
+        clearInterval(interval);
+        window.location.reload();
+      }
+    }, 1000);
+  }
+
+  // Form submission with loading state
+  const form = document.querySelector('.login-form');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitText = document.getElementById('submitText');
+  const spinner = document.querySelector('.spinner');
+
+  if (form) {
+    form.addEventListener('submit', () => {
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+      submitText.textContent = 'Signing in...';
+    });
+  }
+
+  // Focus password field on error if username is filled
+  const usernameField = document.getElementById('username');
+  const passwordField = document.getElementById('password');
+  if (usernameField && usernameField.value && passwordField) {
+    passwordField.focus();
+  }
+  </script>
+</body>
+</html>

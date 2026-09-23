@@ -1,0 +1,86 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Dashboard | LibLocker Admin{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Live overview of locker usage and recent activity{% endblock %}
+
+{% block content %}
+
+<!-- Stat cards -->
+<div class="stat-row">
+  <div class="stat-card stat-card--total">
+    <div class="stat-card__top">
+      <div class="stat-card__icon stat-card__icon--total"></div>
+      <div>
+        <div class="stat-card__value" id="statTotal">0</div>
+        <div class="stat-card__label">Total Lockers</div>
+      </div>
+    </div>
+    <div class="stat-card__chip">{{ locker_capacity }} capacity</div>
+  </div>
+  <div class="stat-card stat-card--available">
+    <div class="stat-card__top">
+      <div class="stat-card__icon stat-card__icon--available"></div>
+      <div>
+        <div class="stat-card__value" id="statAvailable">0</div>
+        <div class="stat-card__label">Available</div>
+      </div>
+    </div>
+    <div class="stat-card__chip" id="availableChip">Ready to use</div>
+  </div>
+  <div class="stat-card stat-card--occupied">
+    <div class="stat-card__top">
+      <div class="stat-card__icon stat-card__icon--occupied"></div>
+      <div>
+        <div class="stat-card__value" id="statOccupied">0</div>
+        <div class="stat-card__label">Occupied</div>
+      </div>
+    </div>
+    <div class="stat-card__chip" id="occupiedChip">In use</div>
+  </div>
+  <div class="stat-card stat-card--maintenance">
+    <div class="stat-card__top">
+      <div class="stat-card__icon stat-card__icon--maintenance"></div>
+      <div>
+        <div class="stat-card__value" id="statMaintenance">0</div>
+        <div class="stat-card__label">Maintenance</div>
+      </div>
+    </div>
+    <div class="stat-card__chip">Needs service</div>
+  </div>
+</div>
+
+<!-- Locker + Activity grid -->
+<div class="dash-grid">
+
+  <!-- Locker overview -->
+  <div class="a-card">
+    <div class="a-card-header">
+      <div>
+        <div class="a-card-title">Locker Status Live Overview</div>
+      </div>
+      <div class="legend-pills">
+        <span class="lpill lpill--available"><span class="lpill-dot"></span>Available</span>
+        <span class="lpill lpill--occupied"><span class="lpill-dot"></span>Occupied</span>
+        <span class="lpill lpill--maintenance"><span class="lpill-dot"></span>Maintenance</span>
+      </div>
+    </div>
+    <div class="a-card-body">
+      <div id="statusOverviewGrid" class="locker-grid"></div>
+    </div>
+  </div>
+
+  <!-- Recent activity -->
+  <div class="a-card" style="display:flex; flex-direction:column; min-height:0;">
+    <div class="a-card-header">
+      <div>
+        <div class="a-card-title">Recent Activity</div>
+        <div class="a-card-sub">Last 6 events</div>
+      </div>
+    </div>
+    <div class="activity-list" id="recentActivityList" style="flex:1; overflow-y:auto; max-height:480px;">
+      <div class="activity-empty">No recent activity yet.</div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Lockers | LibLocker Admin{% endblock %}
+{% block page_title %}Locker Management{% endblock %}
+{% block page_subtitle %}Inspect, unlock and maintain individual lockers{% endblock %}
+
+{% block content %}
+
+<!-- ── Stats bar ──────────────────────────────────────────────── -->
+<div class="locker-stats-bar">
+  <div class="lsb-item lsb-total">
+    <span class="lsb-num" id="lsbTotal">—</span>
+    <span class="lsb-lbl">Total</span>
+  </div>
+  <div class="lsb-sep"></div>
+  <div class="lsb-item lsb-available">
+    <span class="lsb-num" id="lsbAvailable">—</span>
+    <span class="lsb-lbl">Available</span>
+  </div>
+  <div class="lsb-sep"></div>
+  <div class="lsb-item lsb-occupied">
+    <span class="lsb-num" id="lsbOccupied">—</span>
+    <span class="lsb-lbl">Occupied</span>
+  </div>
+  <div class="lsb-sep"></div>
+  <div class="lsb-item lsb-maintenance">
+    <span class="lsb-num" id="lsbMaintenance">—</span>
+    <span class="lsb-lbl">Maintenance</span>
+  </div>
+
+  <div style="flex:1"></div>
+
+  <!-- Legend -->
+  <div class="legend-pills">
+    <span class="lpill lpill--available"><span class="lpill-dot"></span>Available</span>
+    <span class="lpill lpill--occupied"><span class="lpill-dot"></span>Occupied</span>
+    <span class="lpill lpill--maintenance"><span class="lpill-dot"></span>Maintenance</span>
+  </div>
+
+  <!-- Refresh button -->
+  <button class="lsb-refresh-btn" id="lockerRefreshBtn" title="Refresh grid">
+    <svg id="refreshIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ── Main grid card ──────────────────────────────────────────── -->
+<div class="a-card" style="margin-top:0;">
+  <div class="a-card-body" style="padding:20px 20px 24px;">
+
+    <!-- Loading state -->
+    <div id="lockerGridLoading" class="grid-state-wrap">
+      <div class="grid-spinner"></div>
+      <p class="grid-state-msg">Loading lockers…</p>
+    </div>
+
+    <!-- Error state -->
+    <div id="lockerGridError" class="grid-state-wrap" hidden>
+      <div class="grid-state-icon">⚠</div>
+      <p class="grid-state-msg" id="lockerGridErrorMsg">Failed to load lockers.</p>
+      <button class="btn-ghost-sm" onclick="window.refreshLockersGrid()">Try again</button>
+    </div>
+
+    <!-- Live grid (sections rendered by JS) -->
+    <div id="lockerSectionsWrap" hidden></div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     LOCKER DETAIL MODAL
+══════════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="lockerActionModal" tabindex="-1" aria-labelledby="lockerActionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header" style="padding:18px 22px 14px;">
+        <div>
+          <h5 class="modal-title" id="lockerActionModalLabel" style="font-size:16px;font-weight:700;margin:0;">
+            Locker Details
+          </h5>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px;" id="modalLockerSub">—</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body" style="padding:16px 22px 22px;">
+
+        <!-- Status banner -->
+        <div id="modalStatusBanner" class="modal-status-banner">
+          <span id="modalStatusIcon">🟢</span>
+          <span id="modalStatusText">Available</span>
+        </div>
+
+        <!-- Info rows -->
+        <dl class="meta-list" style="margin-top:14px;">
+          <div class="meta-row">
+            <dt class="meta-dt">Locker #</dt>
+            <dd class="meta-dd" id="modalLockerNumber">—</dd>
+          </div>
+          <div class="meta-row">
+            <dt class="meta-dt">Section</dt>
+            <dd class="meta-dd" id="modalLockerGroup">—</dd>
+          </div>
+          <div class="meta-row">
+            <dt class="meta-dt">Last Updated</dt>
+            <dd class="meta-dd" id="modalLockerUpdatedAt">—</dd>
+          </div>
+        </dl>
+
+        <!-- Occupant panel (shown when occupied) -->
+        <div id="modalOccupantPanel" class="occupant-panel" hidden>
+          <div class="occupant-panel-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Current Occupant
+          </div>
+          <div class="occupant-panel-body">
+            <div class="occupant-row">
+              <span class="occupant-lbl">Name</span>
+              <span class="occupant-val" id="modalOccupantName">—</span>
+            </div>
+            <div class="occupant-row">
+              <span class="occupant-lbl">Student ID</span>
+              <span class="occupant-val" id="modalOccupantSid">—</span>
+            </div>
+            <div class="occupant-row">
+              <span class="occupant-lbl">RFID</span>
+              <span class="occupant-val mono" id="modalOccupantRfid">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="modal-actions" style="margin-top:18px;">
+          <button type="button" class="modal-action-btn modal-action-btn--green" data-locker-action="set-available">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+            Set Available
+          </button>
+          <button type="button" class="modal-action-btn modal-action-btn--amber" data-locker-action="set-maintenance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            Maintenance
+          </button>
+          <button type="button" class="modal-action-btn modal-action-btn--red" data-locker-action="force-unlock">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+            Force Unlock
+          </button>
+        </div>
+
+        <p class="modal-feedback" id="lockerActionFeedback" style="margin-top:12px;font-size:12px;min-height:18px;font-weight:500;"></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
