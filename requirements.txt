@@ -1,0 +1,24 @@
+# ── Core web app ────────────────────────────────────────────────
+Flask==3.0.3
+Flask-WTF==1.2.1     # CSRF protection
+Werkzeug==3.0.1
+Jinja2>=3.1.2,<4
+MarkupSafe>=2.1.1,<4
+itsdangerous>=2.1.2,<3
+blinker>=1.6.2,<2
+python-dotenv==1.0.1
+click
+gunicorn
+
+# ── RFID hardware ────────────────────────────────────────────────
+mfrc522==0.0.7       # HF RC522 reader (SPI)
+
+# ── Hardware I2C / GPIO ──────────────────────────────────────────
+smbus2               # MCP23017 I2C relay boards
+RPi.GPIO             # Native GPIO for bypass lockers (9, 14, 17) + relay control
+gpiozero             # Used by test-24.py hardware diagnostic script
+picamera2            # Raspberry Pi camera evidence photos
+
+# ── Utilities ───────────────────────────────────────────────────
+requests
+adafruit-circuitpython-pn532
