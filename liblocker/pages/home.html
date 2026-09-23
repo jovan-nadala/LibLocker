@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker Kiosk</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/kiosk_redesign.css" />
+</head>
+<body class="page page-home">
+  <div class="bg-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <img class="brand-logo-img" src="/assets/img/logo.png" alt="LibLocker Logo" />
+      </div>
+      <div class="brand-wordmark" aria-label="LibLocker">LibLocker</div>
+    </div>
+    <div class="clock">
+      <div id="time" class="clock-time">00:00</div>
+      <div id="date" class="clock-date">---</div>
+    </div>
+  </header>
+
+  <main class="kiosk-home-main">
+
+    <section class="kiosk-home-hero">
+      <h1 class="kiosk-home-title">LibLocker</h1>
+      <p class="kiosk-home-subtitle" data-i18n-key="subtitle">
+        Self-Service E-Library Locker System &nbsp;—&nbsp; Select an action below to begin.
+      </p>
+    </section>
+
+    <section class="kiosk-actions" aria-label="Main actions">
+      <a href="/pages/register.html" class="kiosk-action-card" data-action="register">
+        <div class="kiosk-card-inner">
+          <div class="kiosk-card-icon">
+            <img class="kiosk-card-icon-img" src="/assets/img/register.png" alt="Register" />
+          </div>
+          <div class="kiosk-card-title" data-i18n-key="registerTitle">Register</div>
+          <div class="kiosk-card-desc" data-i18n-key="registerDesc">Create a new account to use lockers</div>
+        </div>
+      </a>
+
+      <a href="/pages/store_select.html" class="kiosk-action-card" data-action="store">
+        <div class="kiosk-card-inner">
+          <div class="kiosk-card-icon">
+            <img class="kiosk-card-icon-img" src="/assets/img/deposit.png" alt="Store Bag" />
+          </div>
+          <div class="kiosk-card-title" data-i18n-key="storeTitle">Store Bag</div>
+          <div class="kiosk-card-desc" data-i18n-key="storeDesc">Secure your belongings for the day.</div>
+        </div>
+      </a>
+
+      <a href="/pages/retrieve.html" class="kiosk-action-card" data-action="retrieve">
+        <div class="kiosk-card-inner">
+          <div class="kiosk-card-icon">
+            <img class="kiosk-card-icon-img" src="/assets/img/retrieve.png" alt="Retrieve Bag" />
+          </div>
+          <div class="kiosk-card-title" data-i18n-key="retrieveTitle">Retrieve Bag</div>
+          <div class="kiosk-card-desc" data-i18n-key="retrieveDescHome">Collect your stored items.</div>
+        </div>
+      </a>
+    </section>
+
+    <section class="kiosk-hint rfid-carousel" aria-label="RFID instruction" tabindex="0">
+      <div class="rfid-carousel-track">
+        <div class="rfid-slide is-active" role="group" aria-label="1 of 3">
+          <div class="rfid-icon"><img class="rfid-icon-img" src="/assets/img/icon.png" alt="" /></div>
+          <div class="rfid-text">
+            <div class="rfid-title" data-i18n-key="helpRfidLine1">Choose an action, then tap your RFID card.</div>
+            <div class="rfid-title" data-i18n-key="helpRfidLine2">Wait for confirmation before leaving the kiosk.</div>
+          </div>
+        </div>
+        <div class="rfid-slide" role="group" aria-label="2 of 3" aria-hidden="true">
+          <div class="rfid-icon"><img class="rfid-icon-img" src="/assets/img/icon.png" alt="" /></div>
+          <div class="rfid-text">
+            <div class="rfid-title" data-i18n-key="helpPrivacyLine1">Keep your access code and RFID private.</div>
+            <div class="rfid-title" data-i18n-key="helpPrivacyLine2">You need it to retrieve your bag.</div>
+          </div>
+        </div>
+        <div class="rfid-slide" role="group" aria-label="3 of 3" aria-hidden="true">
+          <div class="rfid-icon"><img class="rfid-icon-img" src="/assets/img/logo.png" alt="" /></div>
+          <div class="rfid-text">
+            <div class="rfid-title" data-i18n-key="helpLanguageLine1">Need assistance or language help?</div>
+            <div class="rfid-title" data-i18n-key="helpLanguageLine2">Tap the ? button at the bottom right.</div>
+          </div>
+        </div>
+      </div>
+      <div class="rfid-dots" aria-label="Slide indicators">
+        <button class="rfid-dot is-active" type="button" aria-label="Go to slide 1"></button>
+        <button class="rfid-dot" type="button" aria-label="Go to slide 2"></button>
+        <button class="rfid-dot" type="button" aria-label="Go to slide 3"></button>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="help-btn" role="button" tabindex="0" aria-label="Help"><span>?</span></div>
+  <div class="lang-pill" aria-label="Language selector">
+    <span class="lang-label" data-i18n-key="languageLabel">Language:</span>
+    <select id="langSelect" aria-label="Select language">
+      <option value="en" selected data-i18n-key="optionEnglish">English</option>
+      <option value="fil" data-i18n-key="optionFilipino">Filipino</option>
+    </select>
+  </div>
+
+  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/kiosk_enhancements.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker - Process Complete</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" href="../assets/css/kiosk_redesign.css" />
+</head>
+
+<body class="page page-complete">
+  <div class="bg-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <img class="brand-logo-img" src="../assets/img/logo.png" alt="LibLocker Logo">
+      </div>
+      <div class="brand-wordmark" aria-label="LibLocker">LibLocker</div>
+    </div>
+    <div class="clock">
+      <div id="time" class="clock-time">00:00</div>
+      <div id="date" class="clock-date">---</div>
+    </div>
+  </header>
+
+  <main class="kiosk-sub-main">
+
+    <div class="kiosk-center-card complete-card" aria-label="Process Complete">
+      <div class="complete-card-inner">
+
+        <div class="complete-header">
+          <div class="complete-title" data-i18n-key="processCompleteTitle">Process Complete</div>
+          <div class="complete-subtitle" data-i18n-key="processCompleteSubtitle">
+            Your locker is now open. Please take your belongings and close the locker door.
+          </div>
+          <div id="retrieveAutoCloseCountdown" class="assigned-note">Locker will relock in 10s.</div>
+        </div>
+
+        <div class="complete-illustration" aria-hidden="true">
+          <img src="../assets/img/complete-hero.png" alt="" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <section class="kiosk-stepper stepper stepper-3 stepper-3--step3" aria-label="Progress steps">
+      <div class="stepper-line">
+        <div class="stepper-progress"></div>
+        <div class="stepper-dot stepper-dot--done"   style="left:0%"></div>
+        <div class="stepper-dot stepper-dot--done"   style="left:50%"></div>
+        <div class="stepper-dot stepper-dot--active" style="left:100%"></div>
+      </div>
+      <div class="stepper-labels">
+        <div class="stepper-label stepper-label--muted"><span class="num">1.</span> <span data-i18n-key="stepSelectAction">Select Action</span></div>
+        <div class="stepper-label stepper-label--muted"><span class="num">2.</span> <span data-i18n-key="stepRfidVerification">RFID Verification</span></div>
+        <div class="stepper-label stepper-label--active"><span class="num">3.</span> <span data-i18n-key="stepCompleteProcess">Complete Process</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/kiosk_enhancements.js"></script>
+</body>
+</html>

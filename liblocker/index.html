@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/kiosk_redesign.css" />
+</head>
+<body class="page page-landing">
+  <main class="landing-screen" role="button" aria-label="Touch the screen to start" tabindex="0">
+    <section class="landing-center" aria-label="LibLocker start screen">
+      <div class="landing-logo" aria-hidden="true">
+        <img src="/assets/img/logo.png" alt="LibLocker" onerror="this.src='/assets/img/landing-icon.png';" />
+      </div>
+
+      <h1 class="landing-title">LibLocker</h1>
+
+      <p class="landing-subtitle">
+        <span data-i18n-key="landingTouchPrefix">Touch the screen</span>
+        <span data-i18n-key="landingTouchSuffix">to start</span>
+      </p>
+
+      <div class="landing-indicator" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </section>
+
+    <div class="landing-wave landing-wave-left" aria-hidden="true"></div>
+    <div class="landing-wave landing-wave-right" aria-hidden="true"></div>
+
+    <div class="landing-particles landing-particles-left" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="landing-particles landing-particles-right" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+  </main>
+
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>

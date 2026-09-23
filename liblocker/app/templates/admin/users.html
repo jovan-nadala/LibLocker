@@ -1,0 +1,408 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Users | LibLocker Admin{% endblock %}
+{% block page_title %}Registered Users{% endblock %}
+{% block page_subtitle %}All students with a registered RFID card{% endblock %}
+
+{% block content %}
+
+<div class="a-card">
+  <div class="a-card-header">
+    <div>
+      <div class="a-card-title">Registered Students</div>
+      <div class="a-card-sub">All users who have registered their RFID card</div>
+    </div>
+    <div id="userCountBadge" class="users-count-badge">0 users</div>
+  </div>
+
+  <!-- Search -->
+  <div class="users-search">
+    <input
+      id="userSearchInput"
+      type="text"
+      placeholder="🔍  Search by name, student ID or RFID…"
+    >
+    <button class="btn-ghost-sm" id="userRefreshBtn">↻ Refresh</button>
+  </div>
+
+  <!-- Table -->
+  <div style="overflow-x:auto;">
+    <table class="a-table" style="width:100%;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Full Name</th>
+          <th>Student ID</th>
+          <th>RFID Card</th>
+          <th>Registered</th>
+          <th>Active Locker</th>
+          <th>Status</th>
+          <th style="text-align:center;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody">
+        <tr>
+          <td colspan="8" style="text-align:center; color:var(--text-3); padding:40px;">
+            Loading…
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     USER ACTION MODAL (Delete / Unlink)
+══════════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="userActionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:440px;">
+    <div class="modal-content">
+
+      <div class="modal-header" style="padding:18px 22px 14px;">
+        <div>
+          <h5 class="modal-title" style="font-size:16px;font-weight:700;margin:0;">
+            Manage Account
+          </h5>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px;" id="modalUserSub">—</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body" style="padding:16px 22px 22px;">
+
+        <!-- User info card -->
+        <dl class="meta-list">
+          <div class="meta-row">
+            <dt class="meta-dt">Full Name</dt>
+            <dd class="meta-dd" id="modalUserName">—</dd>
+          </div>
+          <div class="meta-row">
+            <dt class="meta-dt">Student ID</dt>
+            <dd class="meta-dd" id="modalUserStudentId" style="font-family:var(--mono);">—</dd>
+          </div>
+          <div class="meta-row">
+            <dt class="meta-dt">RFID Card</dt>
+            <dd class="meta-dd" id="modalUserRfid" style="font-family:var(--mono);font-size:12px;">—</dd>
+          </div>
+        </dl>
+
+        <!-- Active locker warning -->
+        <div id="modalLockerWarning" class="user-action-warning" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span id="modalLockerWarningText">This student has a bag currently stored.</span>
+        </div>
+
+        <!-- Result message -->
+        <div id="modalResultMsg" class="modal-feedback" style="min-height:0;"></div>
+
+        <!-- Action buttons -->
+        <div id="modalActionBtns" class="modal-actions" style="margin-top:16px;">
+          <button type="button" id="btnUnlinkRfid" class="modal-action-btn modal-action-btn--amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Unlink Card Only
+          </button>
+          <button type="button" id="btnDeleteUser" class="modal-action-btn modal-action-btn--red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            Delete Account
+          </button>
+        </div>
+
+        <p style="margin:14px 0 0;font-size:11px;color:var(--text-3);line-height:1.5;">
+          <strong>Unlink Card Only</strong> — keeps the account; student can register a new card.<br>
+          <strong>Delete Account</strong> — permanently removes all data for this student.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<style>
+  .user-action-warning {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: var(--amber-bg);
+    border: 1px solid rgba(245,158,11,0.35);
+    border-radius: var(--radius-md);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #78350f;
+  }
+  .user-action-warning svg { flex-shrink: 0; stroke: #d97706; }
+  .user-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font);
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(224,82,82,0.3);
+    background: var(--red-bg);
+    color: var(--red);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .user-delete-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  var tbody      = document.getElementById('usersTableBody');
+  var countBadge = document.getElementById('userCountBadge');
+  var searchInput = document.getElementById('userSearchInput');
+  var refreshBtn  = document.getElementById('userRefreshBtn');
+
+  var allUsers    = [];
+  var selectedUser = null;
+  var userModal   = null;
+
+  // Bootstrap modal init
+  var modalEl = document.getElementById('userActionModal');
+  if (modalEl && window.bootstrap && window.bootstrap.Modal) {
+    userModal = new window.bootstrap.Modal(modalEl);
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────────
+
+  function getToken() {
+    var t = (document.body.dataset.adminToken || '').trim();
+    if (t) return t;
+    var m = document.querySelector('meta[name="admin-token"]');
+    if (m) return m.content.trim();
+    return (new URLSearchParams(window.location.search)).get('token') || '';
+  }
+
+  function withToken(path) {
+    var t = getToken();
+    return t ? path + (path.includes('?') ? '&' : '?') + 'token=' + encodeURIComponent(t) : path;
+  }
+
+  async function apiRequest(path, method, body) {
+    var opts = { method: method || 'GET', headers: {} };
+    if (body) { opts.body = JSON.stringify(body); opts.headers['Content-Type'] = 'application/json'; }
+    var res = await fetch(withToken(path), opts);
+    var json = {};
+    try { json = await res.json(); } catch(_) {}
+    return { ok: res.ok, status: res.status, body: json };
+  }
+
+  // SQLite datetime('now') always returns UTC. Tag bare timestamps with
+  // 'Z' so the browser parses them correctly, then render in Asia/Manila
+  // (Philippine Time, UTC+8) regardless of the browser's locale.
+  var PHT_TZ = 'Asia/Manila';
+  function fmtDate(raw) {
+    if (!raw) return '-';
+    var s = String(raw).trim();
+    if (!s) return '-';
+    if (s.indexOf('T') < 0) s = s.replace(' ', 'T');
+    if (!/[zZ]|[+-]\d{2}:?\d{2}$/.test(s)) s += 'Z';
+    var d = new Date(s);
+    if (isNaN(d)) return raw;
+    return d.toLocaleDateString('en-US',
+      { timeZone: PHT_TZ, month: 'short', day: 'numeric', year: 'numeric' })
+      + ' ' + d.toLocaleTimeString('en-US',
+      { timeZone: PHT_TZ, hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  function safeEsc(v) {
+    return String(v||'')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Table rendering ────────────────────────────────────────────────────
+
+  function renderTable(users) {
+    if (!users || users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-3);padding:40px;">No registered users yet.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = users.map(function(u, i) {
+      var lockerText = u.active_locker_number
+        ? '<span class="spill spill--occupied">L-' + String(u.active_locker_number).padStart(2,'0') + '</span>'
+        : '<span style="color:var(--text-3);">—</span>';
+
+      var rfidText = u.rfid_uid
+        ? '<span style="font-family:var(--mono);font-size:11px;background:var(--bg);padding:2px 8px;border-radius:5px;border:1px solid var(--border);">' + safeEsc(u.rfid_uid) + '</span>'
+        : '<span style="color:var(--text-3);">—</span>';
+
+      var statusPill = u.rfid_uid
+        ? '<span class="spill spill--available">✓ Active</span>'
+        : '<span class="spill spill--maintenance">⚠ Pending</span>';
+
+      var actionBtn =
+        '<button class="user-delete-btn" data-user-id="' + u.id + '" title="Manage account">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4h6v2"/></svg>'
+        + ' Manage'
+        + '</button>';
+
+      return '<tr>'
+        + '<td style="color:var(--text-3);font-weight:600;">' + (i+1) + '</td>'
+        + '<td style="font-weight:600;">' + safeEsc(u.full_name) + '</td>'
+        + '<td style="font-family:var(--mono);font-size:12px;">' + safeEsc(u.student_id) + '</td>'
+        + '<td>' + rfidText + '</td>'
+        + '<td style="color:var(--text-3);font-size:12px;">' + fmtDate(u.created_at) + '</td>'
+        + '<td>' + lockerText + '</td>'
+        + '<td>' + statusPill + '</td>'
+        + '<td style="text-align:center;">' + actionBtn + '</td>'
+        + '</tr>';
+    }).join('');
+  }
+
+  // ── Manage modal ───────────────────────────────────────────────────────
+
+  function openUserModal(user) {
+    selectedUser = user;
+
+    document.getElementById('modalUserSub').textContent     = 'ID: ' + (user.student_id || '—');
+    document.getElementById('modalUserName').textContent    = user.full_name || '—';
+    document.getElementById('modalUserStudentId').textContent = user.student_id || '—';
+    document.getElementById('modalUserRfid').textContent   = user.rfid_uid || 'Not linked';
+
+    var warn = document.getElementById('modalLockerWarning');
+    var warnText = document.getElementById('modalLockerWarningText');
+    if (user.active_locker_number) {
+      warnText.textContent = 'Student currently has a bag in Locker '
+        + String(user.active_locker_number).padStart(2,'0') + '. '
+        + 'Deleting will force-release it.';
+      warn.hidden = false;
+    } else {
+      warn.hidden = true;
+    }
+
+    // Always re-enable delete button (may have been disabled by a previous action)
+    var deleteBtn  = document.getElementById('btnDeleteUser');
+    deleteBtn.disabled = false;
+    deleteBtn.style.opacity = '';
+
+    // Disable unlink button only if no card is linked
+    var unlinkBtn = document.getElementById('btnUnlinkRfid');
+    if (!user.rfid_uid) {
+      unlinkBtn.disabled = true;
+      unlinkBtn.title = 'No RFID card linked';
+      unlinkBtn.style.opacity = '0.45';
+    } else {
+      unlinkBtn.disabled = false;
+      unlinkBtn.title = '';
+      unlinkBtn.style.opacity = '';
+    }
+
+    var msg = document.getElementById('modalResultMsg');
+    msg.textContent = '';
+    msg.style.color = '';
+    msg.style.marginTop = '';
+
+    document.getElementById('modalActionBtns').hidden = false;
+
+    if (userModal) {
+      userModal.show();
+    } else {
+      modalEl.style.display = 'block';
+      modalEl.classList.add('show');
+    }
+  }
+
+  function setModalResult(text, isError) {
+    var msg = document.getElementById('modalResultMsg');
+    msg.textContent = text;
+    msg.style.color = isError ? 'var(--red)' : 'var(--accent)';
+    msg.style.marginTop = '12px';
+  }
+
+  // ── Actions ────────────────────────────────────────────────────────────
+
+  document.getElementById('btnUnlinkRfid').addEventListener('click', async function() {
+    if (!selectedUser) return;
+    this.disabled = true;
+    document.getElementById('btnDeleteUser').disabled = true;
+    setModalResult('Unlinking RFID card…', false);
+
+    var res = await apiRequest('/api/admin/users/' + selectedUser.id + '/unlink-rfid', 'PATCH');
+
+    if (res.ok && res.body.ok) {
+      setModalResult('✓ RFID card unlinked. Student can now register a new card.', false);
+      document.getElementById('modalActionBtns').hidden = true;
+      loadUsers();
+    } else {
+      setModalResult('✗ ' + (res.body.message || res.body.error || 'Failed. Try again.'), true);
+      this.disabled = false;
+      document.getElementById('btnDeleteUser').disabled = false;
+    }
+  });
+
+  document.getElementById('btnDeleteUser').addEventListener('click', async function() {
+    if (!selectedUser) return;
+    var name = selectedUser.full_name + ' (' + selectedUser.student_id + ')';
+    if (!confirm('Permanently delete account for ' + name + '?\n\nThis cannot be undone.')) return;
+
+    this.disabled = true;
+    document.getElementById('btnUnlinkRfid').disabled = true;
+    setModalResult('Deleting account…', false);
+
+    var res = await apiRequest('/api/admin/users/' + selectedUser.id, 'DELETE');
+
+    if (res.ok && res.body.ok) {
+      var extra = res.body.had_active_locker ? ' Locker has been force-released.' : '';
+      setModalResult('✓ Account deleted.' + extra, false);
+      document.getElementById('modalActionBtns').hidden = true;
+      loadUsers();
+      // Auto-close after 2 seconds
+      setTimeout(function() {
+        if (userModal) userModal.hide();
+      }, 2000);
+    } else {
+      setModalResult('✗ ' + (res.body.message || res.body.error || 'Failed. Try again.'), true);
+      this.disabled = false;
+      document.getElementById('btnUnlinkRfid').disabled = false;
+    }
+  });
+
+  // ── Table click → open modal ───────────────────────────────────────────
+
+  tbody.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-user-id]');
+    if (!btn) return;
+    var userId = Number(btn.dataset.userId);
+    var user   = allUsers.find(function(u) { return u.id === userId; });
+    if (user) openUserModal(user);
+  });
+
+  // ── Load / filter ──────────────────────────────────────────────────────
+
+  function filterUsers(query) {
+    if (!query) return allUsers;
+    query = query.toLowerCase();
+    return allUsers.filter(function(u) {
+      return (u.full_name   || '').toLowerCase().includes(query)
+          || (u.student_id  || '').toLowerCase().includes(query)
+          || (u.rfid_uid    || '').toLowerCase().includes(query);
+    });
+  }
+
+  function loadUsers() {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-3);padding:40px;">Loading…</td></tr>';
+    apiRequest('/api/admin/users').then(function(res) {
+      if (!res.ok) { throw new Error('Failed'); }
+      allUsers = res.body.users || [];
+      countBadge.textContent = allUsers.length + ' user' + (allUsers.length !== 1 ? 's' : '');
+      renderTable(filterUsers(searchInput.value));
+    }).catch(function() {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--red);padding:40px;">Failed to load users.</td></tr>';
+    });
+  }
+
+  searchInput.addEventListener('input', function() { renderTable(filterUsers(this.value)); });
+  refreshBtn.addEventListener('click', loadUsers);
+  loadUsers();
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Activity Logs | LibLocker Admin{% endblock %}
+{% block page_title %}Activity Log{% endblock %}
+{% block page_subtitle %}Searchable history of locker transactions{% endblock %}
+
+{% block content %}
+
+<style>
+  .log-mono{ font-family:var(--mono,Menlo,Consolas,monospace); font-size:12.5px; }
+  .log-empty{
+    text-align:center; color:var(--text-3,#888);
+    padding:36px 12px; font-size:14px;
+  }
+</style>
+
+<div class="a-card" style="margin-bottom:22px;">
+  <div class="a-card-header">
+    <div>
+      <div class="a-card-title">Activity Log</div>
+      <div class="a-card-sub">System Transactions and Events</div>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <div class="filter-field" style="flex:1.2; min-width:160px;">
+      <label class="filter-label">Start Date</label>
+      <input id="filterStartDate" class="filter-input" type="date">
+    </div>
+    <div class="filter-field" style="flex:1.2; min-width:160px;">
+      <label class="filter-label">End Date</label>
+      <input id="filterEndDate" class="filter-input" type="date">
+    </div>
+    <div class="filter-field" style="flex:1.4; min-width:180px;">
+      <label class="filter-label">Activity Type</label>
+      <select id="filterType" class="filter-select">
+        <option value="">All Activities</option>
+        <option value="deposit">Bag Stored</option>
+        <option value="retrieve">Bag Retrieved</option>
+        <option value="registration">Registration</option>
+        <option value="maintenance_started">Maintenance Started</option>
+        <option value="maintenance_completed">Maintenance Completed</option>
+        <option value="status_changed">Status Changed</option>
+      </select>
+    </div>
+    <div class="filter-field" style="flex:2; min-width:200px;">
+      <label class="filter-label">Search</label>
+      <input id="filterSearch" class="filter-input" type="text" placeholder="🔍  Search Locker ID or Action">
+    </div>
+    <div style="display:flex; align-items:flex-end; gap:8px;">
+      <button id="applyLogFilters" class="btn-primary-sm">Apply</button>
+      <button id="clearLogFilters" class="btn-ghost-sm">Reset</button>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table id="activityLogsTable" class="a-table w-100">
+      <thead>
+        <tr>
+          <th>Time &amp; Date</th>
+          <th>Activity Type</th>
+          <th>Locker ID</th>
+          <th>Status</th>
+          <th>Evidence</th>
+        </tr>
+      </thead>
+      <tbody id="logsFallbackBody"></tbody>
+    </table>
+  </div>
+</div>
+
+{# Evidence modal lives in base_admin.html as a global modal #}
+{% endblock %}

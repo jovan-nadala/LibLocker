@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker - Register</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" href="../assets/css/kiosk_redesign.css" />
+  <link rel="stylesheet" href="../assets/css/kiosk_keypad.css" />
+</head>
+
+<body class="page page-register" data-register-flow="guided-v2">
+  <div class="bg-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <img class="brand-logo-img" src="../assets/img/logo.png" alt="LibLocker Logo">
+      </div>
+      <div class="brand-wordmark" aria-label="LibLocker">LibLocker</div>
+    </div>
+    <div class="clock">
+      <div id="time" class="clock-time">00:00</div>
+      <div id="date" class="clock-date">---</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <h1 class="title" data-i18n-key="registerPageTitle">Register</h1>
+    </section>
+
+    <section class="grid">
+
+      <div class="form-card">
+        <div class="form-inner">
+
+          <section id="detailsView" class="register-view register-view--active" aria-label="Input Details">
+            <div class="input-box">
+              <input id="fullName" type="text" placeholder="Full Name"
+                class="uppercase-input"
+                data-i18n-placeholder-key="registerPlaceholderFullName"
+                data-kk-keypad="alpha"
+                data-kk-label="Full Name"
+                autocomplete="off" autocapitalize="characters" spellcheck="false" />
+              <div id="fullNameError" class="input-error" aria-live="polite"></div>
+            </div>
+
+            <div class="input-box">
+              <input id="studentId" type="text" placeholder="Student ID Number"
+                class="numeric-input"
+                data-i18n-placeholder-key="registerPlaceholderStudentId"
+                data-kk-keypad="numeric"
+                data-kk-label="Student ID"
+                autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="12" />
+              <div id="studentIdError" class="input-error" aria-live="polite"></div>
+            </div>
+
+            <button id="confirmDetailsBtn" class="btn-primary" type="button"
+              data-i18n-key="registerConfirmDetails"
+              onclick="return window.__liblockerConfirmDetails && window.__liblockerConfirmDetails(event);"
+              style="position:relative; z-index:5;">Confirm Details</button>
+
+            <button id="backBtn" class="link-back" type="button" onclick="goHome()"
+              data-i18n-key="commonBack"
+              style="position:relative; z-index:5;">Back</button>
+          </section>
+
+          <section id="scanView" class="register-view register-view--scan"
+            aria-label="RFID Scan View" hidden>
+            <div class="scan-center">
+              <div class="scan-icon-wrap" aria-hidden="true">
+                <span class="scan-pulse scan-pulse--a"></span>
+                <span class="scan-pulse scan-pulse--b"></span>
+                <span class="scan-pulse scan-pulse--c"></span>
+                <img class="scan-rfid-icon" src="../assets/img/icon.png" alt="" />
+              </div>
+              <div class="scan-title" data-i18n-key="registerScanTitle">
+                Tap your RFID card to link your account.
+              </div>
+              <div id="scanSubtext" class="scan-subtext" data-i18n-key="registerScanWaiting">
+                Waiting for scan...
+              </div>
+            </div>
+          </section>
+
+          <div id="registerToast" class="register-toast" role="status" aria-live="polite"></div>
+
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="kiosk-illustration">
+          <img src="../assets/img/registericon.png" alt="RFID Registration Illustration"
+            style="width:100%; height:auto; object-fit:contain;" />
+        </div>
+        <div class="right-caption">
+          <span data-i18n-key="registerRightCaptionLine1">Get one RFID card from the</span><br/>
+          <span data-i18n-key="registerRightCaptionLine2">container below.</span>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="stepper" aria-label="Progress steps">
+      <div class="stepper-line">
+        <div class="stepper-progress" style="width:50%;"></div>
+        <div class="stepper-dot stepper-dot--done"   style="left:0%"></div>
+        <div class="stepper-dot stepper-dot--active" style="left:50%"></div>
+        <div class="stepper-dot"                     style="left:100%"></div>
+      </div>
+      <div class="stepper-labels">
+        <div class="stepper-label stepper-label--muted">
+          <span class="num">1.</span> <span data-i18n-key="stepSelectAction">Select Action</span>
+        </div>
+        <div class="stepper-label stepper-label--active">
+          <span class="num">2.</span> <span data-i18n-key="stepRfidVerification">RFID Verification</span>
+        </div>
+        <div class="stepper-label stepper-label--muted">
+          <span class="num">3.</span> <span data-i18n-key="stepCompleteProcess">Complete Process</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/register.js"></script>
+  <script src="../assets/js/kiosk_enhancements.js"></script>
+  <script src="../assets/js/kiosk_keypad.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker - Locker Assigned</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" href="../assets/css/kiosk_redesign.css" />
+</head>
+
+<body class="page page-assigned">
+  <div class="bg-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <img class="brand-logo-img" src="../assets/img/logo.png" alt="LibLocker Logo">
+      </div>
+      <div class="brand-wordmark" aria-label="LibLocker">LibLocker</div>
+    </div>
+    <div class="clock">
+      <div id="time" class="clock-time">00:00</div>
+      <div id="date" class="clock-date">---</div>
+    </div>
+  </header>
+
+  <main class="kiosk-sub-main">
+
+    <div class="kiosk-center-card assigned-card" aria-label="Locker Assigned">
+      <div class="assigned-card-inner">
+
+        <div class="assigned-header">
+          <div class="assigned-heading" data-i18n-key="depositCompleteHeading">Locker Assigned</div>
+          <p class="assigned-subtitle" data-i18n-key="depositCompleteSubtitle">
+            Your locker has been assigned. Please proceed to the locker shown below.
+          </p>
+        </div>
+
+        <div class="assigned-content">
+          <div class="assigned-left" aria-label="Assigned locker number">
+            <div class="locker-badge">
+              <div id="lockerNumber" class="locker-number"></div>
+            </div>
+          </div>
+          <div class="assigned-right">
+            <img class="assigned-illustration"
+              src="../assets/img/deposit-complete.png" alt=""
+              onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="assigned-footer">
+          <div id="depositDoorIndicator" class="door-indicator door-indicator--waiting">
+            <span class="door-indicator-dot" aria-hidden="true"></span>
+            <span id="depositDoorIndicatorText" class="door-indicator-text" data-i18n-key="depositDoorWaiting">
+              Pull the locker door open to place your bag.
+            </span>
+          </div>
+          <div class="assigned-note assigned-note--muted" data-i18n-key="depositCompleteNote">
+            Place your bag inside and close the door firmly.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <section class="kiosk-stepper stepper stepper-4 stepper-4--step4" aria-label="Progress steps">
+      <div class="stepper-line">
+        <div class="stepper-progress"></div>
+        <div class="stepper-dot stepper-dot--done"   style="left:0%"></div>
+        <div class="stepper-dot stepper-dot--done"   style="left:33.333%"></div>
+        <div class="stepper-dot stepper-dot--done"   style="left:66.666%"></div>
+        <div class="stepper-dot stepper-dot--active" style="left:100%"></div>
+      </div>
+      <div class="stepper-labels">
+        <div class="stepper-label stepper-label--muted"><span class="num">1.</span> <span data-i18n-key="stepSelectAction">Select Action</span></div>
+        <div class="stepper-label stepper-label--muted"><span class="num">2.</span> <span data-i18n-key="stepLockerSelection">Locker Selection</span></div>
+        <div class="stepper-label stepper-label--muted"><span class="num">3.</span> <span data-i18n-key="stepRfidVerification">RFID Verification</span></div>
+        <div class="stepper-label stepper-label--active"><span class="num">4.</span> <span data-i18n-key="stepCompleteProcess">Complete Process</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/kiosk_enhancements.js"></script>
+</body>
+</html>
