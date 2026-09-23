@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker - Locker Selection</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" href="../assets/css/kiosk_redesign.css" />
+</head>
+
+<body class="page page-locker">
+  <div class="bg-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <img class="brand-logo-img" src="../assets/img/logo.png" alt="LibLocker Logo">
+      </div>
+      <div class="brand-wordmark" aria-label="LibLocker">LibLocker</div>
+    </div>
+    <div class="clock">
+      <div id="time" class="clock-time">00:00</div>
+      <div id="date" class="clock-date">---</div>
+    </div>
+  </header>
+
+  <main class="kiosk-sub-main">
+
+    <div class="kiosk-center-card locker-card" aria-label="Locker selection">
+      <div class="locker-card-inner">
+
+        <div class="kiosk-page-header kiosk-page-header--centered">
+          <h1 class="kiosk-page-title" data-i18n-key="depositTitle">Deposit Bag</h1>
+          <p class="kiosk-page-sub" data-i18n-key="storeSelectSubtitle">
+            Please select your preferred locker position.
+          </p>
+        </div>
+
+        <div class="locker-options" role="list">
+          <button class="locker-option" type="button" data-value="LOWER" role="listitem" aria-pressed="false">
+            <div class="locker-option-inner">
+              <div class="locker-option-icon">
+                <img src="../assets/img/lower.png" alt="" onerror="this.style.display='none'">
+              </div>
+              <div class="locker-option-title" data-i18n-key="lockerLowerLevel">Lower Level</div>
+            </div>
+          </button>
+
+          <button class="locker-option" type="button" data-value="UPPER" role="listitem" aria-pressed="false">
+            <div class="locker-option-inner">
+              <div class="locker-option-icon">
+                <img src="../assets/img/upper.png" alt="" onerror="this.style.display='none'">
+              </div>
+              <div class="locker-option-title" data-i18n-key="lockerUpperLevel">Upper Level</div>
+            </div>
+          </button>
+
+          <button class="locker-option" type="button" data-value="ANY" role="listitem" aria-pressed="false">
+            <div class="locker-option-inner">
+              <div class="locker-option-icon">
+                <img src="../assets/img/any.png" alt="" onerror="this.style.display='none'">
+              </div>
+              <div class="locker-option-title" data-i18n-key="lockerAnyAvailable">Any Available</div>
+            </div>
+          </button>
+        </div>
+
+        <div class="locker-actions" aria-label="Navigation buttons">
+          <a class="pill-btn pill-btn--ghost" href="/home" data-i18n-key="commonBack">Back</a>
+          <button class="pill-btn pill-btn--solid" id="nextBtn" type="button" disabled
+            data-i18n-key="commonNext">Next</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <section class="kiosk-stepper stepper stepper-4 stepper-4--step2" aria-label="Progress steps">
+      <div class="stepper-line">
+        <div class="stepper-progress"></div>
+        <div class="stepper-dot stepper-dot--done"   style="left:0%"></div>
+        <div class="stepper-dot stepper-dot--active" style="left:33.333%"></div>
+        <div class="stepper-dot"                     style="left:66.666%"></div>
+        <div class="stepper-dot"                     style="left:100%"></div>
+      </div>
+      <div class="stepper-labels">
+        <div class="stepper-label stepper-label--muted"><span class="num">1.</span> <span data-i18n-key="stepSelectAction">Select Action</span></div>
+        <div class="stepper-label stepper-label--active"><span class="num">2.</span> <span data-i18n-key="stepLockerSelection">Locker Selection</span></div>
+        <div class="stepper-label stepper-label--muted"><span class="num">3.</span> <span data-i18n-key="stepRfidVerification">RFID Verification</span></div>
+        <div class="stepper-label stepper-label--muted"><span class="num">4.</span> <span data-i18n-key="stepCompleteProcess">Complete Process</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/kiosk_enhancements.js"></script>
+</body>
+</html>

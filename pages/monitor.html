@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibLocker - Database Monitor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .timestamp {
+      color: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 0.95em;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .stat-card.occupied .stat-value {
+      color: #e74c3c;
+    }
+
+    .stat-card.available .stat-value {
+      color: #27ae60;
+    }
+
+    .stat-card.users .stat-value {
+      color: #f39c12;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      font-size: 1.5em;
+      color: #333;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th {
+      background-color: #667eea;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+
+    .status-occupied {
+      background-color: #fee;
+      color: #c33;
+    }
+
+    .status-available {
+      background-color: #efe;
+      color: #3c3;
+    }
+
+    .status-success {
+      background-color: #efe;
+      color: #3c3;
+    }
+
+    .status-error {
+      background-color: #fee;
+      color: #c33;
+    }
+
+    .status-warning {
+      background-color: #ffe;
+      color: #cc3;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #999;
+      padding: 40px 20px;
+      font-size: 1.1em;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #5568d3;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .loading {
+      text-align: center;
+      color: #999;
+      font-size: 0.9em;
+    }
+
+    .locker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .locker-box {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9em;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .locker-box.available {
+      background-color: #27ae60;
+    }
+
+    .locker-box.occupied {
+      background-color: #e74c3c;
+    }
+
+    .locker-box:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .locker-tooltip {
+      font-size: 0.75em;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 LibLocker Database Monitor</h1>
+    <div class="timestamp">Last updated: <span id="timestamp">--:--:--</span></div>
+
+    <div class="controls">
+      <button onclick="fetchStatus()">🔄 Refresh Now</button>
+      <label>
+        <input type="checkbox" id="autoRefresh" checked>
+        Auto-refresh (5s)
+      </label>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-label">Total Lockers</div>
+        <div class="stat-value" id="totalLockers">--</div>
+      </div>
+      <div class="stat-card available">
+        <div class="stat-label">Available</div>
+        <div class="stat-value" id="availableLockers">--</div>
+      </div>
+      <div class="stat-card occupied">
+        <div class="stat-label">Occupied</div>
+        <div class="stat-value" id="occupiedLockers">--</div>
+      </div>
+      <div class="stat-card users">
+        <div class="stat-label">Registered Users</div>
+        <div class="stat-value" id="totalUsers">--</div>
+      </div>
+    </div>
+
+    <!-- Locker Grid Visualization -->
+    <div class="section">
+      <h2>🗄️ Locker Status Grid</h2>
+      <div class="locker-grid" id="lockerGrid"></div>
+    </div>
+
+    <!-- Occupied Lockers -->
+    <div class="section">
+      <h2>🔒 Currently Occupied Lockers</h2>
+      <div id="occupiedSection">
+        <div class="empty-state">No occupied lockers</div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="section">
+      <h2>📝 Recent Activity (Last 20)</h2>
+      <div id="activitySection">
+        <div class="loading">Loading activity log...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = '/api/status/database';
+    let autoRefreshInterval = null;
+
+    function formatTime(isoString) {
+      if (!isoString) return '--:--:--';
+      const date = new Date(isoString);
+      return date.toLocaleTimeString('en-US', { hour12: false });
+    }
+
+    function formatDateTime(isoString) {
+      if (!isoString) return '--';
+      const date = new Date(isoString);
+      return date.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    async function fetchStatus() {
+      try {
+        const response = await fetch(API_URL);
+        const result = await response.json();
+
+        if (!result.ok) {
+          console.error('API error:', result.error);
+          return;
+        }
+
+        const data = result.data;
+
+        // Update stats
+        document.getElementById('timestamp').textContent = formatTime(data.timestamp);
+        document.getElementById('totalLockers').textContent = data.lockers.total;
+        document.getElementById('availableLockers').textContent = data.lockers.available;
+        document.getElementById('occupiedLockers').textContent = data.lockers.occupied;
+        document.getElementById('totalUsers').textContent = data.users.total;
+
+        // Draw locker grid
+        drawLockerGrid(data.occupied_lockers, data.lockers.total);
+
+        // Update occupied lockers table
+        updateOccupiedLockers(data.occupied_lockers);
+
+        // Update activity log
+        updateActivityLog(data.recent_activity);
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    }
+
+    function drawLockerGrid(occupiedLockers, totalLockers) {
+      const grid = document.getElementById('lockerGrid');
+      grid.innerHTML = '';
+
+      const occupiedMap = {};
+      occupiedLockers.forEach(l => {
+        occupiedMap[l.locker_number] = l;
+      });
+
+      for (let i = 1; i <= totalLockers; i++) {
+        const locker = occupiedMap[i];
+        const box = document.createElement('div');
+        box.className = `locker-box ${locker ? 'occupied' : 'available'}`;
+        
+        if (locker) {
+          box.textContent = `#${i}`;
+          box.title = `Student: ${locker.student_id}\nRFID: ${locker.current_rfid_uid || 'N/A'}`;
+        } else {
+          box.textContent = `#${i}`;
+          box.title = 'Available';
+        }
+        
+        grid.appendChild(box);
+      }
+    }
+
+    function updateOccupiedLockers(occupied) {
+      const section = document.getElementById('occupiedSection');
+
+      if (!occupied || occupied.length === 0) {
+        section.innerHTML = '<div class="empty-state">No occupied lockers</div>';
+        return;
+      }
+
+      let html = '<table><thead><tr><th>Locker #</th><th>Location</th><th>Student</th><th>RFID UID</th><th>Assigned</th><th>Action</th></tr></thead><tbody>';
+
+      occupied.forEach(locker => {
+        html += `
+          <tr>
+            <td><strong>#${locker.locker_number}</strong></td>
+            <td>${locker.locker_group || '--'}</td>
+            <td>${locker.full_name || locker.student_id || '--'}</td>
+            <td><code style="font-size:0.85em">${locker.current_rfid_uid || '--'}</code></td>
+            <td>${formatDateTime(locker.assigned_time)}</td>
+            <td><span class="status-badge status-occupied">${locker.action || 'DEPOSIT'}</span></td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      section.innerHTML = html;
+    }
+
+    function updateActivityLog(activities) {
+      const section = document.getElementById('activitySection');
+
+      if (!activities || activities.length === 0) {
+        section.innerHTML = '<div class="empty-state">No recent activity</div>';
+        return;
+      }
+
+      let html = '<table><thead><tr><th>Timestamp</th><th>Activity</th><th>Locker</th><th>Student</th><th>Status</th></tr></thead><tbody>';
+
+      activities.forEach(activity => {
+        const statusClass = `status-${activity.status}`;
+        html += `
+          <tr>
+            <td>${formatDateTime(activity.timestamp)}</td>
+            <td>${activity.activity_type || '--'}</td>
+            <td>${activity.locker_number ? '#' + activity.locker_number : '--'}</td>
+            <td>${activity.full_name || activity.student_id || '--'}</td>
+            <td><span class="status-badge ${statusClass}">${activity.status || '--'}</span></td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      section.innerHTML = html;
+    }
+
+    function startAutoRefresh() {
+      const checkbox = document.getElementById('autoRefresh');
+      if (checkbox.checked) {
+        fetchStatus();
+        autoRefreshInterval = setInterval(fetchStatus, 5000);
+      } else {
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+          autoRefreshInterval = null;
+        }
+      }
+    }
+
+    document.getElementById('autoRefresh').addEventListener('change', startAutoRefresh);
+
+    // Initial fetch
+    fetchStatus();
+    startAutoRefresh();
+  </script>
+</body>
+</html>

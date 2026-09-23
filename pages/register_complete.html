@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker - Registration Complete</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" href="../assets/css/kiosk_redesign.css" />
+</head>
+
+<body class="page page-register-complete">
+  <div class="bg-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <img class="brand-logo-img" src="../assets/img/logo.png" alt="LibLocker Logo">
+      </div>
+      <div class="brand-wordmark" aria-label="LibLocker">LibLocker</div>
+    </div>
+
+    <div class="clock">
+      <div id="time" class="clock-time">00:00</div>
+      <div id="date" class="clock-date">---</div>
+    </div>
+  </header>
+
+  <main class="wrap register-complete-wrap">
+    
+    <section class="register-complete-card" aria-label="Registration Complete">
+      <div class="register-complete-card-inner">
+        
+        <div class="register-complete-badge" aria-hidden="true">
+          <svg class="success-svg" viewBox="0 0 52 52">
+            <circle class="success-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="success-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+
+        <div class="register-complete-header">
+          <h1 class="register-complete-title" data-i18n-key="registrationCompleteTitle">Registration Complete</h1>
+          <p class="register-complete-subtitle">
+            <span data-i18n-key="registrationCompleteLine1">Your RFID card is now successfully linked.</span><br>
+            <span data-i18n-key="registrationCompleteLine2">You may now enter the library for verification.</span>
+          </p>
+          
+          <div class="redirect-indicator">
+            <p data-i18n-key="returningMainMenu">Returning to main menu</p>
+            <div class="redirect-dots"><span>.</span><span>.</span><span>.</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/js/app.js"></script>
+  <script>
+    // Smooth redirect after 4.5 seconds
+    window.setTimeout(function () {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.5s ease';
+      
+      setTimeout(function() {
+        window.location.href = "/home";
+      }, 500);
+    }, 4500);
+  </script>
+  <script src="../assets/js/kiosk_enhancements.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker - Retrieve Bag</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" href="../assets/css/kiosk_redesign.css" />
+</head>
+
+<body class="page page-retrieve">
+  <div class="bg-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <img class="brand-logo-img" src="../assets/img/logo.png" alt="LibLocker Logo">
+      </div>
+      <div class="brand-wordmark" aria-label="LibLocker">LibLocker</div>
+    </div>
+    <div class="clock">
+      <div id="time" class="clock-time">00:00</div>
+      <div id="date" class="clock-date">---</div>
+    </div>
+  </header>
+
+  <main class="kiosk-sub-main">
+
+    <div class="kiosk-center-card retrieve-card" aria-label="Retrieve Bag RFID instructions">
+      <div class="retrieve-card-inner">
+
+        <div class="kiosk-page-header kiosk-page-header--centered">
+          <h1 class="kiosk-page-title" data-i18n-key="retrieveTitle">Retrieve Bag</h1>
+          <p class="kiosk-page-sub" data-i18n-key="rfidStepSubtitle">
+            Follow the steps below to tap your RFID card.
+          </p>
+        </div>
+
+        <div class="retrieve-content">
+          <div class="retrieve-illustration" aria-hidden="true">
+            <img src="../assets/img/retrieve-hero.png" alt="" />
+          </div>
+
+          <div class="retrieve-steps">
+            <div class="step-row">
+              <div class="step-icon"><img src="../assets/img/icon-reader.png" alt="" /></div>
+              <div class="step-text">
+                <span class="step-num">1.</span>
+                <span data-i18n-key="rfidStepLocateReader">Locate the RFID reader on the kiosk.</span>
+              </div>
+            </div>
+
+            <div class="step-row">
+              <div class="step-icon"><img src="../assets/img/icon-keyfob.png" alt="" /></div>
+              <div class="step-text">
+                <span class="step-num">2.</span>
+                <span data-i18n-key="rfidStepTapFob">Tap your registered RFID card.</span>
+              </div>
+            </div>
+
+            <div class="retrieve-status" id="retrieveStatus" data-i18n-key="statusWaitingRfidTap">
+              Waiting for RFID tap...
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <section class="kiosk-stepper stepper stepper-3 stepper-3--step2" aria-label="Progress steps">
+      <div class="stepper-line">
+        <div class="stepper-progress"></div>
+        <div class="stepper-dot stepper-dot--done"   style="left:0%"></div>
+        <div class="stepper-dot stepper-dot--active" style="left:50%"></div>
+        <div class="stepper-dot"                     style="left:100%"></div>
+      </div>
+      <div class="stepper-labels">
+        <div class="stepper-label stepper-label--muted"><span class="num">1.</span> <span data-i18n-key="stepSelectAction">Select Action</span></div>
+        <div class="stepper-label stepper-label--active"><span class="num">2.</span> <span data-i18n-key="stepRfidVerification">RFID Verification</span></div>
+        <div class="stepper-label stepper-label--muted"><span class="num">3.</span> <span data-i18n-key="stepCompleteProcess">Complete Process</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Full-screen state shown when the tapped card has no bag to retrieve -->
+  <div class="kiosk-fs-state kiosk-fs-state--info" id="noBagOverlay" hidden
+       role="alertdialog" aria-live="assertive" aria-labelledby="noBagTitle">
+    <div class="kiosk-fs-card">
+      <div class="kiosk-fs-icon kiosk-fs-icon--info" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 8l9-5 9 5v8l-9 5-9-5z"/>
+          <path d="M3 8l9 5 9-5"/>
+          <line x1="12" y1="13" x2="12" y2="21"/>
+        </svg>
+      </div>
+      <h2 class="kiosk-fs-title kiosk-fs-title--info" id="noBagTitle">No Bag Found</h2>
+      <p class="kiosk-fs-msg" id="noBagMsg">There's no bag stored for this card.</p>
+      <div class="kiosk-fs-redirect">
+        <span data-i18n-key="noLockersRedirect">Returning to home in</span>
+        <span class="kiosk-fs-count" id="noBagCountdown">5</span>s
+      </div>
+      <div class="kiosk-fs-bar" aria-hidden="true"><span id="noBagBar"></span></div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/kiosk_enhancements.js"></script>
+</body>
+</html>
