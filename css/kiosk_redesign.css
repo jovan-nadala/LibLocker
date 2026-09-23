@@ -1,0 +1,1448 @@
+/* =========================================================
+   LibLocker Kiosk — Modern Redesign Overlay
+   Loaded AFTER styles.css. Pure visual polish:
+     - Larger touch targets (min 80px on primary actions)
+     - Tighter typography hierarchy
+     - Unified shadow + radius system
+     - Consistent press feedback (scale 0.97)
+     - Same color palette (no theme drift)
+   Target: 1280x800 (10.1") landscape touch kiosk.
+========================================================= */
+
+:root{
+  /* Map existing palette into a small design-token set so this overlay
+     stays color-faithful. Do not change these hexes. */
+  --kk-primary:       #2f7d44;       /* existing --green        */
+  --kk-primary-soft:  #4fa56a;       /* existing --green-2      */
+  --kk-primary-deep:  #1f5a30;
+  --kk-ink:           #111418;
+  --kk-ink-2:         rgba(17,20,24,0.66);
+  --kk-ink-3:         rgba(17,20,24,0.46);
+  --kk-surface:       rgba(255,255,255,0.92);
+  --kk-surface-soft:  rgba(255,255,255,0.78);
+  --kk-line:          rgba(47,125,68,0.20);
+  --kk-line-strong:   rgba(47,125,68,0.45);
+
+  --kk-radius-sm: 14px;
+  --kk-radius-md: 20px;
+  --kk-radius-lg: 28px;
+  --kk-radius-pill: 999px;
+
+  --kk-shadow-1: 0 6px 18px rgba(20,40,28,0.06);
+  --kk-shadow-2: 0 14px 36px rgba(20,40,28,0.10);
+  --kk-shadow-3: 0 24px 56px rgba(20,40,28,0.14);
+  --kk-shadow-press: 0 4px 12px rgba(20,40,28,0.10);
+
+  --kk-ease: cubic-bezier(.4, 0, .2, 1);
+  --kk-ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
+
+  /* Touch press scale */
+  --kk-press: scale(.97);
+}
+
+/* =========================================================
+   GLOBAL TOUCH/RENDERING
+========================================================= */
+html, body{
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+body.page,
+body.page-landing{
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Universal press feedback for any interactive element */
+.kiosk-action-card:active,
+.locker-option:active,
+.pill-btn:active,
+.btn-primary:active,
+.link-back:active,
+.help-btn:active,
+.rfid-dot:active{
+  transform: var(--kk-press);
+  transition: transform .08s var(--kk-ease);
+}
+
+/* Stronger focus ring (kiosk accessibility) */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+select:focus-visible,
+input:focus-visible{
+  outline: 3px solid rgba(47,125,68,0.55);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* =========================================================
+   TOPBAR — slightly cleaner clock card
+========================================================= */
+.topbar{
+  padding-top: 18px;
+}
+.brand-wordmark{
+  color: var(--kk-ink);
+  font-weight: 900;
+}
+.clock{
+  background: rgba(255,255,255,0.66);
+  border: 1px solid rgba(47,125,68,0.14);
+  box-shadow: var(--kk-shadow-1);
+}
+.clock-time{
+  color: var(--kk-ink);
+  font-variant-numeric: tabular-nums;
+}
+.clock-date{
+  color: var(--kk-ink-3);
+  font-weight: 600;
+}
+
+/* =========================================================
+   HOME PAGE — kiosk action cards (modern, larger)
+========================================================= */
+.kiosk-home-title{
+  color: var(--kk-ink);
+  text-shadow: 0 8px 24px rgba(20,40,28,0.06);
+}
+.kiosk-home-subtitle{
+  color: var(--kk-ink-2);
+  font-weight: 500;
+}
+
+.kiosk-actions{
+  gap: 30px;
+}
+
+.kiosk-action-card{
+  min-height: 332px;
+  border-radius: var(--kk-radius-lg);
+  border: 1.5px solid var(--kk-line);
+  background:
+    linear-gradient(150deg, rgba(255,255,255,0.97), rgba(255,255,255,0.82)),
+    linear-gradient(135deg, rgba(79,165,106,0.06), rgba(79,165,106,0.00));
+  box-shadow: var(--kk-shadow-2);
+  transition:
+    transform .25s var(--kk-ease),
+    box-shadow .25s var(--kk-ease),
+    border-color .2s var(--kk-ease);
+}
+
+.kiosk-action-card:hover{
+  transform: translateY(-8px);
+  box-shadow: var(--kk-shadow-3);
+  border-color: var(--kk-line-strong);
+}
+
+.kiosk-action-card--featured{
+  background:
+    linear-gradient(150deg, rgba(255,255,255,0.98), rgba(244,255,247,0.90)),
+    linear-gradient(135deg, rgba(79,165,106,0.10), rgba(79,165,106,0.02));
+  border-color: rgba(47,125,68,0.32);
+}
+.kiosk-action-card--featured::after{
+  border-color: rgba(79,165,106,0.30);
+}
+
+.kiosk-card-inner{
+  padding: 40px 28px 36px;
+  gap: 4px;
+}
+
+.kiosk-card-icon{
+  width: 152px;
+  height: 152px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(79,165,106,0.18), rgba(79,165,106,0.04));
+  margin-bottom: 22px;
+}
+.kiosk-card-icon-img{
+  width: 116px;
+  height: 116px;
+  filter: drop-shadow(0 10px 18px rgba(47,125,68,0.16));
+}
+
+.kiosk-card-title{
+  font-size: clamp(34px, 2.7vw, 42px);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--kk-ink);
+  margin-bottom: 10px;
+}
+
+.kiosk-card-desc{
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--kk-ink-2);
+  max-width: 290px;
+}
+
+/* RFID hint card — calmer, more premium */
+.kiosk-hint{
+  background: rgba(255,255,255,0.84);
+  border: 1.5px solid rgba(79,165,106,0.20);
+  box-shadow: var(--kk-shadow-2);
+  border-radius: 22px;
+}
+
+/* =========================================================
+   SUB-PAGE CARD (locker, retrieve, deposit, complete, assigned)
+========================================================= */
+.kiosk-center-card{
+  border-radius: var(--kk-radius-lg);
+  border: 1.5px solid var(--kk-line);
+  background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(255,255,255,0.78));
+  box-shadow: var(--kk-shadow-2);
+}
+
+.kiosk-page-title{
+  color: var(--kk-primary-deep);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.5px;
+}
+
+.kiosk-page-sub{
+  color: var(--kk-ink-2);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   PILL BUTTONS (Back / Next) — meet 80px touch min on Next
+========================================================= */
+.pill-btn{
+  height: 72px;
+  min-width: 192px;
+  padding: 0 38px;
+  font-size: 22px;
+  font-weight: 800;
+  border-radius: var(--kk-radius-pill);
+  letter-spacing: 0.3px;
+  box-shadow: var(--kk-shadow-1);
+  transition:
+    transform .12s var(--kk-ease),
+    box-shadow .18s var(--kk-ease),
+    filter .18s var(--kk-ease);
+}
+.pill-btn--solid{
+  background: linear-gradient(180deg, #3a9555 0%, var(--kk-primary) 100%);
+  color: #fff;
+  border: 1px solid rgba(31,90,48,0.45);
+  box-shadow:
+    var(--kk-shadow-2),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+}
+.pill-btn--solid:hover{ filter: brightness(1.04); box-shadow: var(--kk-shadow-3); }
+.pill-btn--ghost{
+  background: rgba(47,125,68,0.10);
+  color: var(--kk-primary-deep);
+  border: 1.5px solid rgba(47,125,68,0.30);
+}
+.pill-btn--ghost:hover{ background: rgba(47,125,68,0.16); }
+.pill-btn[disabled]{
+  opacity: .5;
+  filter: grayscale(.2);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* =========================================================
+   LOCKER SELECT — bigger touch tiles
+========================================================= */
+.page-locker .locker-options{
+  gap: 32px;
+  margin: 24px 0 30px;
+}
+
+.page-locker .locker-option{
+  min-height: 240px;
+  border-radius: 26px;
+  border: 2px solid rgba(47,125,68,0.20);
+  background: rgba(255,255,255,0.78);
+  box-shadow: var(--kk-shadow-1);
+  transition:
+    transform .2s var(--kk-ease),
+    border-color .2s var(--kk-ease),
+    box-shadow .2s var(--kk-ease);
+}
+.page-locker .locker-option::before{
+  border-color: rgba(79,165,106,0.18);
+}
+
+.page-locker .locker-option:hover{
+  transform: translateY(-6px);
+  border-color: var(--kk-line-strong);
+  box-shadow: var(--kk-shadow-2);
+}
+
+.page-locker .locker-option--active{
+  border-width: 3px;
+  border-color: rgba(47,125,68,0.78);
+  background: rgba(255,255,255,0.94);
+  box-shadow:
+    0 14px 36px rgba(47,125,68,0.18),
+    inset 0 0 0 2px rgba(79,165,106,0.10);
+  transform: translateY(-4px);
+}
+
+.page-locker .locker-option-inner{
+  padding: 34px 24px 30px;
+  gap: 18px;
+}
+.page-locker .locker-option-icon{
+  width: 144px;
+  height: 144px;
+  border-radius: 26px;
+}
+.page-locker .locker-option-icon img{
+  width: 100px;
+  height: 100px;
+}
+.page-locker .locker-option-title{
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--kk-ink);
+  letter-spacing: -0.3px;
+}
+
+/* =========================================================
+   REGISTER PAGE — modern inputs + bigger primary button
+========================================================= */
+.page-register .form-card{
+  border-radius: 24px;
+  border: 1.5px solid var(--kk-line);
+  background: rgba(255,255,255,0.74);
+  box-shadow: var(--kk-shadow-2);
+}
+
+.page-register .input-box{ margin-bottom: 16px; }
+
+.page-register .input-box input{
+  height: 78px;
+  padding: 0 24px;
+  font-size: 24px;
+  font-weight: 600;
+  border-radius: 16px;
+  border: 2px solid rgba(47,125,68,0.30);
+  background: rgba(255,255,255,0.90);
+  box-shadow: 0 6px 14px rgba(20,40,28,0.04);
+  color: var(--kk-ink);
+  transition:
+    border-color .18s var(--kk-ease),
+    box-shadow .2s var(--kk-ease),
+    background .2s var(--kk-ease);
+}
+.page-register .input-box input::placeholder{
+  color: var(--kk-ink-3);
+  font-weight: 500;
+}
+.page-register .input-box input:focus{
+  border-color: var(--kk-primary);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(47,125,68,0.14),
+    0 14px 28px rgba(47,125,68,0.10);
+  transform: none;  /* override globally enhanced lift */
+}
+
+.page-register .input-box input.input-invalid{
+  border-color: #c62828;
+  box-shadow: 0 0 0 4px rgba(198,40,40,0.10);
+}
+
+.page-register .btn-primary{
+  height: 84px;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  border-radius: 18px;
+  border: 1px solid rgba(31,90,48,0.45);
+  background: linear-gradient(180deg, #3a9555 0%, var(--kk-primary) 100%);
+  box-shadow:
+    var(--kk-shadow-2),
+    inset 0 1px 0 rgba(255,255,255,0.20);
+  margin-top: 10px;
+  transition:
+    filter .15s var(--kk-ease),
+    transform .12s var(--kk-ease),
+    box-shadow .2s var(--kk-ease);
+}
+.page-register .btn-primary:hover{
+  filter: brightness(1.04);
+  box-shadow: var(--kk-shadow-3);
+}
+.page-register .btn-primary:active{
+  transform: var(--kk-press);
+  box-shadow: var(--kk-shadow-press);
+}
+
+.page-register .link-back{
+  height: 76px;
+  font-size: 22px;
+  font-weight: 800;
+  border-radius: 18px;
+  border: 1.5px solid rgba(47,125,68,0.32);
+  background: rgba(47,125,68,0.10);
+  color: var(--kk-primary-deep);
+  margin-top: 12px;
+}
+.page-register .link-back:hover{ background: rgba(47,125,68,0.16); }
+
+/* RFID scan view — fullscreen-feeling tap icon with pulse */
+.page-register .scan-icon-wrap{
+  width: 240px;
+  height: 240px;
+}
+.page-register .scan-rfid-icon{
+  width: 168px;
+  filter: drop-shadow(0 12px 22px rgba(47,125,68,0.22));
+}
+.page-register .scan-pulse{
+  width: 168px;
+  height: 168px;
+  border-width: 4px;
+  border-color: rgba(79,165,106,0.42);
+}
+.page-register .scan-title{
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--kk-ink);
+}
+.page-register .scan-subtext{
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--kk-ink-2);
+}
+
+/* =========================================================
+   DEPOSIT / RETRIEVE — RFID step card
+========================================================= */
+.page-retrieve .step-icon{
+  width: 76px;
+  height: 76px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.92);
+  border: 1.5px solid rgba(47,125,68,0.18);
+  box-shadow: var(--kk-shadow-1);
+}
+.page-retrieve .step-icon img{
+  width: 44px;
+  height: 44px;
+}
+.page-retrieve .step-text{
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--kk-ink);
+  line-height: 1.3;
+}
+.page-retrieve .step-num{
+  color: var(--kk-primary-deep);
+  font-weight: 900;
+  margin-right: 4px;
+}
+
+.page-retrieve .retrieve-status{
+  font-size: 20px;
+  font-weight: 800;
+  padding: 16px 22px 16px 46px;
+  border-radius: 16px;
+  background: rgba(244,251,246,0.95);
+  border: 1.5px solid rgba(47,125,68,0.24);
+  color: var(--kk-primary-deep);
+  box-shadow: var(--kk-shadow-1);
+}
+.page-retrieve .retrieve-status::before{
+  width: 18px;
+  height: 18px;
+  left: 16px;
+  background: var(--kk-primary-soft);
+  box-shadow: 0 0 0 4px rgba(79,165,106,0.18);
+}
+
+/* =========================================================
+   DEPOSIT COMPLETE — Locker Assigned (BIG number)
+========================================================= */
+.page-assigned .assigned-heading{
+  color: var(--kk-primary-deep);
+  font-weight: 900;
+  letter-spacing: -0.6px;
+}
+.page-assigned .assigned-subtitle{
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--kk-ink-2);
+  line-height: 1.45;
+}
+
+.page-assigned .locker-badge{
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%,
+      rgba(79,165,106,0.34) 0%,
+      rgba(79,165,106,0.14) 45%,
+      rgba(79,165,106,0.04) 72%);
+  border: 3px solid rgba(47,125,68,0.34);
+  box-shadow:
+    0 22px 52px rgba(47,125,68,0.20),
+    inset 0 0 0 6px rgba(255,255,255,0.55);
+  animation: kk-badge-pop .55s var(--kk-ease-bounce) both;
+}
+.page-assigned .locker-number{
+  font-size: 104px;
+  font-weight: 950;
+  color: var(--kk-primary-deep);
+  letter-spacing: -2px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.page-assigned .assigned-note{
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--kk-ink-2);
+}
+
+@keyframes kk-badge-pop{
+  0%   { opacity: 0; transform: scale(.6); }
+  60%  { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* =========================================================
+   PROCESS COMPLETE — clean success card
+========================================================= */
+.page-complete .complete-title{
+  color: var(--kk-primary-deep);
+  font-weight: 900;
+  letter-spacing: -0.6px;
+}
+.page-complete .complete-subtitle{
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--kk-ink-2);
+  max-width: 660px;
+}
+
+/* If a page wants a quick check-mark tile, make it look right */
+.page-complete .complete-check,
+.complete-check{
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+  box-shadow: 0 18px 36px rgba(46,125,50,0.28);
+  color: #fff;
+  font-size: 60px;
+  font-weight: 900;
+  animation: kk-badge-pop .6s var(--kk-ease-bounce) both;
+}
+
+/* =========================================================
+   REGISTRATION COMPLETE — already minimalist; refine sizes
+========================================================= */
+.page-register-complete .register-complete-card{
+  border-radius: var(--kk-radius-lg);
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(255,255,255,0.85);
+  box-shadow: var(--kk-shadow-3);
+}
+.page-register-complete .register-complete-badge{
+  width: 130px;
+  height: 130px;
+  background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+  box-shadow: 0 18px 36px rgba(46,125,50,0.28);
+}
+.success-svg{ width: 68px; height: 68px; }
+
+.page-register-complete .register-complete-title{
+  font-size: clamp(44px, 4.6vw, 56px);
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  color: var(--kk-ink);
+}
+.page-register-complete .register-complete-subtitle{
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--kk-ink-2);
+  line-height: 1.5;
+}
+
+.redirect-indicator{
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--kk-primary-deep);
+  background: rgba(47,125,68,0.10);
+  border: 1px solid rgba(47,125,68,0.20);
+  padding: 14px 28px;
+  margin-top: 40px;
+}
+
+/* =========================================================
+   PROCESSING SCREEN — generic loader (works whenever
+   .uhf-spinner is present; e.g. UHF / processing states)
+========================================================= */
+.uhf-spinner{
+  width: 88px;
+  height: 88px;
+  border-width: 7px;
+  border-color: rgba(47,125,68,0.16);
+  border-top-color: var(--kk-primary);
+  margin: 0 auto 28px;
+  animation: uhf-spin .9s linear infinite;
+}
+
+/* =========================================================
+   STEPPER — clearer steps, more touch-readable labels
+========================================================= */
+.stepper-line::after{
+  background: rgba(20,40,28,0.14);
+  height: 4px;
+  top: 10px;
+}
+.stepper-progress{
+  height: 4px;
+  top: 10px;
+  background: linear-gradient(90deg, var(--kk-primary-soft), var(--kk-primary));
+  box-shadow: 0 4px 12px rgba(47,125,68,0.30);
+  transition: width .5s var(--kk-ease);
+}
+.stepper-dot{
+  width: 22px;
+  height: 22px;
+  top: 1px;
+  background: #ffffff;
+  border: 2px solid rgba(20,40,28,0.18);
+  box-shadow: 0 4px 10px rgba(20,40,28,0.06);
+}
+.stepper-dot--done{
+  background: var(--kk-primary);
+  border-color: var(--kk-primary-deep);
+}
+.stepper-dot--active{
+  background: var(--kk-primary);
+  border-color: var(--kk-primary-deep);
+  box-shadow:
+    0 0 0 6px rgba(47,125,68,0.16),
+    0 6px 16px rgba(47,125,68,0.30);
+}
+.stepper-labels{ font-size: 15px; }
+.stepper-label--active{
+  color: var(--kk-primary-deep);
+  font-weight: 800;
+}
+.stepper-label--muted{ color: var(--kk-ink-3); }
+
+/* =========================================================
+   HELP / LANGUAGE controls — bigger touch
+========================================================= */
+.help-btn{
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(180deg, #3a9555 0%, var(--kk-primary) 100%);
+  box-shadow: var(--kk-shadow-2);
+  border: 1px solid rgba(31,90,48,0.45);
+}
+.help-btn span{ font-size: 28px; }
+
+.lang-pill{
+  padding: 14px 22px;
+  background: rgba(255,255,255,0.90);
+  border: 1px solid rgba(47,125,68,0.20);
+  box-shadow: var(--kk-shadow-2);
+  border-radius: var(--kk-radius-pill);
+}
+.lang-pill select{
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--kk-primary-deep);
+}
+
+/* =========================================================
+   TOUCH-DEVICE SPECIFICS — disable hover lift, keep press
+========================================================= */
+@media (hover: none){
+  .kiosk-action-card:hover,
+  .page-locker .locker-option:hover,
+  .pill-btn:hover,
+  .page-register .btn-primary:hover{
+    transform: none;
+    filter: none;
+  }
+  .kiosk-action-card:active{ transform: scale(.98); }
+  .page-locker .locker-option:active{ transform: scale(.97); }
+  .pill-btn:active,
+  .page-register .btn-primary:active,
+  .page-register .link-back:active{ transform: scale(.97); }
+}
+
+/* =========================================================
+   FULLSCREEN FIT — strict viewport column so the stepper
+   never falls below the fold in Chromium kiosk mode.
+   The page becomes:  topbar  |  main (flex)  |  (stepper inside)
+   and `.kiosk-sub-main` itself becomes:  card (flex) | stepper
+========================================================= */
+html, body{
+  height: 100%;
+  overflow: hidden;
+}
+
+body.page{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;          /* mobile/kiosk safe — uses dynamic viewport */
+}
+
+body.page > .topbar{
+  flex: 0 0 auto;
+}
+
+/* Home and sub-page mains both fill the remaining height */
+body.page > .kiosk-home-main,
+body.page > .kiosk-sub-main,
+body.page > .wrap{
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Sub-page layout: card shrinks; stepper has reserved, visible space */
+.kiosk-sub-main{
+  display: flex;
+  flex-direction: column;
+  padding: 14px 24px 18px;
+  gap: 14px;
+  min-height: 0;
+}
+
+.kiosk-center-card{
+  flex: 1 1 auto;
+  min-height: 0;
+  /* Internal scroll only as a safety net — content should fit */
+  overflow: auto;
+}
+
+.kiosk-stepper{
+  flex: 0 0 auto;
+  margin: 0 auto;
+  padding-bottom: 8px;     /* keep dot+label fully visible */
+}
+
+/* Stepper labels need vertical room for their text below the dots */
+.kiosk-stepper .stepper-line{
+  margin-bottom: 14px;
+}
+.kiosk-stepper .stepper-labels{
+  line-height: 1.25;
+  padding-bottom: 4px;
+}
+
+/* =========================================================
+   1280×800 FIT — tighten paddings on the target display
+========================================================= */
+@media (min-width: 1240px) and (min-height: 740px) and (max-height: 820px){
+  /* Tighten home so all 3 cards + hint fit cleanly */
+  .kiosk-home-main{ gap: 20px; padding-bottom: 12px; }
+  .kiosk-action-card{ min-height: 296px; }
+  .kiosk-card-inner{ padding: 32px 24px 28px; }
+  .kiosk-card-icon{ width: 132px; height: 132px; margin-bottom: 18px; }
+  .kiosk-card-icon-img{ width: 100px; height: 100px; }
+
+  /* Sub-pages: keep card breathing without overflow */
+  .kiosk-sub-main{ padding: 10px 20px 14px; gap: 10px; }
+  .page-assigned .locker-badge{ width: 200px; height: 200px; }
+  .page-assigned .locker-number{ font-size: 92px; }
+}
+
+/* Fullscreen displays bigger than 800px tall — give the stepper
+   a touch more breathing room so the labels never clip. */
+@media (min-height: 900px){
+  .kiosk-sub-main{ padding-bottom: 24px; }
+  .kiosk-stepper{ padding-bottom: 12px; }
+}
+
+/* =========================================================
+   DEPOSIT COMPLETE — Open-window countdown pill
+========================================================= */
+.open-timer{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: var(--kk-radius-pill);
+  background: rgba(255,255,255,0.86);
+  border: 2px solid var(--kk-line);
+  box-shadow: var(--kk-shadow-1);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--kk-ink-2);
+  transition: background 0.25s var(--kk-ease),
+              border-color 0.25s var(--kk-ease),
+              color 0.25s var(--kk-ease);
+}
+
+.open-timer-label{
+  letter-spacing: 0.2px;
+}
+
+.open-timer-value{
+  font-size: 22px;
+  font-weight: 950;
+  color: var(--kk-primary-deep);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  min-width: 38px;
+  text-align: right;
+}
+
+.open-timer--running{
+  border-color: rgba(47,125,68,0.35);
+  background: rgba(216,239,225,0.65);
+}
+.open-timer--running .open-timer-value{
+  color: var(--kk-primary-deep);
+}
+
+.open-timer--open{
+  border-color: rgba(217,144,42,0.45);
+  background: rgba(255,243,221,0.92);
+  color: #b1741a;
+}
+.open-timer--open .open-timer-value{ color: #b1741a; }
+
+.open-timer--secured{
+  border-color: var(--kk-primary);
+  background: var(--kk-primary);
+  color: #fff;
+}
+.open-timer--secured .open-timer-value{ color: #fff; }
+
+.open-timer--expired{
+  border-color: rgba(17,20,24,0.18);
+  background: rgba(238,240,242,0.92);
+  color: var(--kk-ink-3);
+}
+.open-timer--expired .open-timer-value{ color: var(--kk-ink-3); }
+
+/* =========================================================
+   DEPOSIT COMPLETE — Door state indicator + footer layout
+========================================================= */
+.page-assigned .assigned-footer{
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 18px 6px;
+}
+
+.page-assigned .assigned-note--muted{
+  color: var(--kk-ink-3);
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 580px;
+}
+
+.door-indicator{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 22px;
+  border-radius: var(--kk-radius-pill);
+  background: rgba(255,255,255,0.86);
+  border: 2px solid var(--kk-line);
+  box-shadow: var(--kk-shadow-1);
+  font-size: 19px;
+  font-weight: 750;
+  color: var(--kk-ink-2);
+  transition: background 0.25s var(--kk-ease),
+              border-color 0.25s var(--kk-ease),
+              color 0.25s var(--kk-ease);
+}
+
+.door-indicator-dot{
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.6);
+  flex-shrink: 0;
+}
+
+.door-indicator--waiting{
+  color: rgba(47,125,68,0.78);
+  border-color: rgba(47,125,68,0.30);
+}
+.door-indicator--waiting .door-indicator-dot{
+  animation: kk-door-pulse 1.4s ease-in-out infinite;
+}
+
+.door-indicator--open{
+  color: #b1741a;
+  border-color: rgba(217,144,42,0.45);
+  background: rgba(255,243,221,0.92);
+}
+.door-indicator--open .door-indicator-dot{
+  animation: kk-door-pulse 0.9s ease-in-out infinite;
+}
+
+.door-indicator--closing{
+  color: var(--kk-primary-deep);
+  border-color: rgba(47,125,68,0.55);
+  background: rgba(216,239,225,0.92);
+}
+
+.door-indicator--secured{
+  color: #fff;
+  border-color: var(--kk-primary);
+  background: var(--kk-primary);
+  box-shadow: 0 14px 30px rgba(47,125,68,0.30);
+}
+
+.door-indicator--error{
+  color: #a3261d;
+  border-color: rgba(163,38,29,0.45);
+  background: rgba(255,228,224,0.92);
+}
+
+@keyframes kk-door-pulse{
+  0%,100% { transform: scale(1);   opacity: 1; }
+  50%     { transform: scale(1.4); opacity: 0.55; }
+}
+
+/* (door_warning.html removed — its inline replacement
+    `.door-open-warning` lives further down in this file.) */
+
+/* =========================================================
+   REGISTRATION ALERTS — toast + inline error chip
+   Polished, kiosk-readable, color-coded for error / success.
+   Targets:
+     .register-toast              (main toast at bottom of the form)
+     .input-error                 (inline message under each field)
+     .input-box input.input-invalid (the invalid input itself)
+========================================================= */
+
+/* ── Main toast ────────────────────────────────────────── */
+.page-register .register-toast{
+  /* Reset base text-only styling and become a real alert card */
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+  margin: 14px 0 0;
+  padding: 16px 22px 16px 22px;
+  min-height: 64px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.96);
+  border: 2px solid rgba(20, 40, 28, 0.10);
+  border-left-width: 6px;
+  box-shadow:
+    0 14px 36px rgba(20, 40, 28, 0.10),
+    0 4px 10px rgba(20, 40, 28, 0.04);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  line-height: 1.3;
+  color: var(--kk-ink);
+  opacity: 0;
+  transform: translateY(14px) scale(0.98);
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity .22s var(--kk-ease),
+    transform .26s var(--kk-ease),
+    visibility 0s linear .26s;
+  position: relative;
+  z-index: 5;
+}
+
+/* The original toast is hidden until JS adds .is-show */
+.page-register .register-toast:not(.is-show){
+  margin-top: 0;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.page-register .register-toast.is-show{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  visibility: visible;
+  transition:
+    opacity .22s var(--kk-ease),
+    transform .26s var(--kk-ease-bounce),
+    visibility 0s linear 0s;
+}
+
+/* Leading icon — drawn with CSS mask, so the colour follows the variant */
+.page-register .register-toast::before{
+  content: "";
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: block;
+  background-color: var(--kk-ink-2);
+  -webkit-mask-repeat: no-repeat;  mask-repeat: no-repeat;
+  -webkit-mask-position: center;   mask-position: center;
+  -webkit-mask-size: 22px 22px;    mask-size: 22px 22px;
+}
+
+/* ── ERROR variant (e.g. "Student ID already registered." / "RFID card already linked.") ── */
+.page-register .register-toast.is-error{
+  background: linear-gradient(180deg, #fff7f5 0%, #fdeae6 100%);
+  border-color: rgba(181, 54, 54, 0.30);
+  border-left-color: #b53636;
+  color: #761c1c;
+  box-shadow:
+    0 14px 36px rgba(181, 54, 54, 0.18),
+    0 4px 10px rgba(181, 54, 54, 0.06);
+  animation: kk-toast-shake .42s var(--kk-ease);
+}
+
+.page-register .register-toast.is-error::before{
+  background-color: #b53636;
+  box-shadow: 0 0 0 4px rgba(181, 54, 54, 0.15);
+  /* warning triangle with exclamation */
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><circle cx='12' cy='17' r='1'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><circle cx='12' cy='17' r='1'/></svg>");
+}
+
+/* ── SUCCESS variant ── */
+.page-register .register-toast.is-success{
+  background: linear-gradient(180deg, #f4fbf6 0%, #e7f5ec 100%);
+  border-color: rgba(47, 125, 68, 0.30);
+  border-left-color: var(--kk-primary);
+  color: var(--kk-primary-deep);
+  box-shadow:
+    0 14px 36px rgba(47, 125, 68, 0.18),
+    0 4px 10px rgba(47, 125, 68, 0.06);
+}
+
+.page-register .register-toast.is-success::before{
+  background-color: var(--kk-primary);
+  box-shadow: 0 0 0 4px rgba(47, 125, 68, 0.15);
+  /* check inside circle */
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polyline points='8 12 11 15 16 9'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polyline points='8 12 11 15 16 9'/></svg>");
+}
+
+/* Subtle shake on error to draw attention */
+@keyframes kk-toast-shake{
+  0%   { transform: translateY(0)    scale(1); }
+  20%  { transform: translateX(-6px) scale(1); }
+  40%  { transform: translateX(5px)  scale(1); }
+  60%  { transform: translateX(-3px) scale(1); }
+  80%  { transform: translateX(2px)  scale(1); }
+  100% { transform: translateY(0)    scale(1); }
+}
+
+/* ── Inline input-error chip (under each field) ────────── */
+.page-register .input-error{
+  /* override the bare-text default — become a small pill chip */
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  line-height: 1.25;
+}
+
+.page-register .input-error:not(:empty){
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 0 0;
+  padding: 7px 14px 7px 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff7f5 0%, #fdeae6 100%);
+  border: 1.5px solid rgba(181, 54, 54, 0.28);
+  color: #8a2222;
+  box-shadow: 0 4px 10px rgba(181, 54, 54, 0.08);
+  animation: kk-input-error-pop .25s var(--kk-ease-bounce);
+}
+
+.page-register .input-error:not(:empty)::before{
+  content: "";
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background-color: #b53636;
+  -webkit-mask-repeat: no-repeat;  mask-repeat: no-repeat;
+  -webkit-mask-position: center;   mask-position: center;
+  -webkit-mask-size: contain;      mask-size: contain;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='8' x2='12' y2='13'/><circle cx='12' cy='16.5' r='1'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='8' x2='12' y2='13'/><circle cx='12' cy='16.5' r='1'/></svg>");
+}
+
+@keyframes kk-input-error-pop{
+  0%   { opacity: 0; transform: translateY(-4px) scale(0.94); }
+  60%  { opacity: 1; transform: translateY(0)    scale(1.03); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* ── Invalid input field — reinforce the existing red glow ── */
+.page-register .input-box input.input-invalid{
+  border-color: #b53636 !important;
+  background: linear-gradient(180deg, #fffafa 0%, #fff3f0 100%) !important;
+  box-shadow:
+    0 0 0 4px rgba(181, 54, 54, 0.14),
+    0 14px 28px rgba(181, 54, 54, 0.10) !important;
+  animation: kk-input-shake .42s var(--kk-ease);
+}
+
+@keyframes kk-input-shake{
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+/* =========================================================
+   DOOR-OPEN WARNING BANNER (deposit_complete + complete_process)
+   Replaces the old standalone door_warning.html page.
+   Shown inline at the bottom of the page when the monitor
+   reports status="door_left_open" (door still OPEN after
+   LOCKER_OPEN_VERIFY_TIMEOUT_SECONDS, default 10s).
+========================================================= */
+.door-open-warning{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 22px auto 0;
+  padding: 18px 26px;
+  max-width: 720px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff5e9 0%, #ffe6c8 100%);
+  border: 2px solid rgba(204, 100, 22, 0.35);
+  border-left-width: 7px;
+  border-left-color: #d97706;
+  box-shadow:
+    0 16px 40px rgba(204, 100, 22, 0.18),
+    0 4px 10px rgba(204, 100, 22, 0.06);
+  color: #7a3a0c;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: 0.1px;
+  animation: kk-warning-banner-pop .35s var(--kk-ease-bounce);
+}
+
+.door-open-warning[hidden]{ display: none; }
+
+.door-open-warning-icon{
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  background: #d97706;
+  -webkit-mask-repeat: no-repeat;  mask-repeat: no-repeat;
+  -webkit-mask-position: center;   mask-position: center;
+  -webkit-mask-size: contain;      mask-size: contain;
+  /* warning triangle with exclamation */
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><circle cx='12' cy='17' r='1'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><circle cx='12' cy='17' r='1'/></svg>");
+  animation: kk-warning-icon-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes kk-warning-icon-pulse{
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.12); }
+}
+
+.door-open-warning-text{
+  flex: 1;
+  min-width: 0;
+}
+
+@keyframes kk-warning-banner-pop{
+  0%   { opacity: 0; transform: translateY(10px) scale(0.96); }
+  60%  { opacity: 1; transform: translateY(0)    scale(1.02); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* =========================================================
+   REDUCED MOTION — respect users
+========================================================= */
+@media (prefers-reduced-motion: reduce){
+  .page-assigned .locker-badge,
+  .complete-check,
+  .page-complete .complete-check,
+  .door-indicator-dot,
+  .door-open-warning,
+  .door-open-warning-icon,
+  .page-register .register-toast.is-error,
+  .page-register .input-error,
+  .page-register .input-box input.input-invalid{
+    animation: none;
+  }
+}
+
+
+/* =========================================================
+   UI/UX ENHANCEMENTS v2  (appended — wins the cascade)
+   - Larger, more tactile home action cards (the main request)
+   - Refined hero, background depth, sub-page cards & buttons
+   Pure CSS polish. No markup / JS / backend changes.
+   Still respects the 1280x800 fullscreen (no-scroll) fit.
+========================================================= */
+
+/* ---------- Background: layered green depth ---------- */
+.bg-glow{
+  background:
+    radial-gradient(58% 52% at 50% -4%, rgba(79,165,106,0.18) 0%, rgba(79,165,106,0) 70%),
+    radial-gradient(42% 42% at 90% 8%,  rgba(47,125,68,0.10) 0%, rgba(47,125,68,0) 72%),
+    radial-gradient(46% 46% at 6% 96%,  rgba(79,165,106,0.10) 0%, rgba(79,165,106,0) 72%);
+}
+
+/* ---------- Home hero ---------- */
+.kiosk-home-title{
+  background: linear-gradient(180deg, #16341f 0%, #2f7d44 92%);
+  -webkit-background-clip: text;  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+.kiosk-home-subtitle{ letter-spacing: 0.2px; }
+
+/* ---------- Home action cards: bigger + tactile ---------- */
+.kiosk-actions{ gap: 34px; width: min(1220px, 94vw); }
+
+.kiosk-action-card{
+  min-height: 372px;
+  border-radius: 32px;
+  border-width: 2px;
+  box-shadow: 0 16px 44px rgba(18,40,24,0.10);
+  /* fill-mode 'backwards' so the finished animation doesn't pin the
+     transform and block the :hover lift */
+  animation: kk-card-in .6s var(--kk-ease-bounce) backwards;
+}
+.kiosk-action-card[data-action="register"]{ animation-delay: .04s; }
+.kiosk-action-card[data-action="store"]{    animation-delay: .12s; }
+.kiosk-action-card[data-action="retrieve"]{ animation-delay: .20s; }
+
+.kiosk-card-inner{ padding: 48px 30px 42px; }
+
+.kiosk-card-icon{
+  width: 172px;
+  height: 172px;
+  border-radius: 34px;
+  margin-bottom: 26px;
+}
+.kiosk-card-icon-img{ width: 128px; height: 128px; }
+
+.kiosk-card-title{ font-size: clamp(36px, 2.9vw, 46px); margin-bottom: 12px; }
+.kiosk-card-desc{ font-size: 18px; max-width: 300px; }
+
+/* Featured "Store Bag" — clearer primary emphasis */
+.kiosk-action-card--featured{
+  border-color: rgba(47,125,68,0.42);
+  box-shadow: 0 22px 52px rgba(47,125,68,0.18);
+}
+.kiosk-action-card--featured .kiosk-card-icon{
+  background: linear-gradient(145deg, rgba(79,165,106,0.26), rgba(79,165,106,0.06));
+}
+
+@keyframes kk-card-in{
+  0%   { opacity: 0; transform: translateY(24px) scale(.965); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* ---------- Sub-page cards & titles (all non-home pages) ---------- */
+.kiosk-center-card{
+  border-radius: 30px;
+  box-shadow: 0 20px 50px rgba(18,40,24,0.12);
+  animation: kk-fade-up .5s var(--kk-ease) both;
+}
+.kiosk-page-title{
+  background: linear-gradient(180deg, #1a5028 0%, #2f7d44 100%);
+  -webkit-background-clip: text;  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes kk-fade-up{
+  0%   { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Pill buttons: gentle light sweep on hover ---------- */
+.pill-btn--solid{ position: relative; overflow: hidden; }
+.pill-btn--solid::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg,
+      transparent 32%, rgba(255,255,255,0.22) 50%, transparent 68%);
+  transform: translateX(-120%);
+  transition: transform .6s var(--kk-ease);
+}
+.pill-btn--solid:hover::after{ transform: translateX(120%); }
+
+/* ---------- Locker select tiles: rounder, matches card language ---------- */
+.page-locker .locker-option{ border-radius: 28px; }
+.page-locker .locker-option--active::before{
+  border-color: rgba(47,125,68,0.55);
+}
+
+/* ---------- Kiosk 1280x800: keep the bigger cards fitting cleanly ---------- */
+@media (min-width: 1240px) and (min-height: 740px) and (max-height: 820px){
+  .kiosk-home-main{ gap: 18px; }
+  .kiosk-action-card{ min-height: 344px; }
+  .kiosk-card-inner{ padding: 38px 26px 32px; }
+  .kiosk-card-icon{ width: 150px; height: 150px; margin-bottom: 20px; }
+  .kiosk-card-icon-img{ width: 112px; height: 112px; }
+  .kiosk-card-title{ font-size: clamp(32px, 2.6vw, 42px); }
+}
+
+/* ---------- Reduced-motion: honour accessibility preference ---------- */
+@media (prefers-reduced-motion: reduce){
+  .kiosk-action-card,
+  .kiosk-center-card{ animation: none; }
+  .pill-btn--solid::after{ display: none; }
+}
+
+
+/* =========================================================
+   FULL-SCREEN STATE — "No Lockers Available" (deposit)
+   Shown when every locker is occupied. Auto-redirects home.
+========================================================= */
+.kiosk-fs-state{
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background:
+    radial-gradient(60% 60% at 50% 30%, rgba(255,243,221,0.55), rgba(255,243,221,0) 70%),
+    rgba(24, 34, 27, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: kk-fs-in .28s var(--kk-ease) both;
+}
+.kiosk-fs-state[hidden]{ display: none; }
+
+.kiosk-fs-card{
+  width: min(560px, 92vw);
+  text-align: center;
+  padding: 48px 44px 40px;
+  border-radius: 32px;
+  background: rgba(255,255,255,0.98);
+  border: 1.5px solid rgba(217,144,42,0.30);
+  box-shadow:
+    0 30px 70px rgba(20,40,28,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  animation: kk-fs-pop .5s var(--kk-ease-bounce) both;
+}
+
+.kiosk-fs-icon{
+  width: 128px;
+  height: 128px;
+  margin: 0 auto 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #d9902a;
+  background: linear-gradient(145deg, rgba(217,144,42,0.20), rgba(217,144,42,0.06));
+  box-shadow: 0 16px 36px rgba(217,144,42,0.22);
+}
+.kiosk-fs-icon svg{ width: 68px; height: 68px; }
+
+.kiosk-fs-title{
+  margin: 0 0 12px;
+  font-size: clamp(34px, 3.4vw, 46px);
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  color: #7a4d10;
+}
+
+.kiosk-fs-msg{
+  margin: 0 auto 26px;
+  max-width: 440px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--kk-ink-2);
+}
+
+.kiosk-fs-redirect{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--kk-ink-3);
+}
+.kiosk-fs-count{
+  font-size: 22px;
+  font-weight: 950;
+  color: #b1741a;
+  font-variant-numeric: tabular-nums;
+  min-width: 16px;
+}
+
+/* Slim progress bar that drains while the countdown runs */
+.kiosk-fs-bar{
+  margin: 22px auto 0;
+  width: 220px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(20,40,28,0.10);
+  overflow: hidden;
+}
+.kiosk-fs-bar > span{
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e0a53a, #d9902a);
+  transform-origin: left center;
+  transition: transform 1s linear;
+}
+
+@keyframes kk-fs-in{
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes kk-fs-pop{
+  0%   { opacity: 0; transform: translateY(18px) scale(.94); }
+  60%  { opacity: 1; transform: translateY(0)    scale(1.02); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .kiosk-fs-state, .kiosk-fs-card{ animation: none; }
+  .kiosk-fs-bar > span{ transition: none; }
+}
+
+
+/* =========================================================
+   FULL-SCREEN STATE — info variant ("No Bag Found", retrieve)
+   Same layout as the amber warning, re-themed to calm green.
+========================================================= */
+.kiosk-fs-state--info{
+  background:
+    radial-gradient(60% 60% at 50% 30%, rgba(216,239,225,0.55), rgba(216,239,225,0) 70%),
+    rgba(24, 34, 27, 0.55);
+}
+.kiosk-fs-state--info .kiosk-fs-card{
+  border-color: rgba(47,125,68,0.28);
+}
+.kiosk-fs-icon--info{
+  color: var(--kk-primary);
+  background: linear-gradient(145deg, rgba(79,165,106,0.20), rgba(79,165,106,0.06));
+  box-shadow: 0 16px 36px rgba(47,125,68,0.20);
+}
+.kiosk-fs-title--info{ color: var(--kk-primary-deep); }
+.kiosk-fs-state--info .kiosk-fs-count{ color: var(--kk-primary-deep); }
+.kiosk-fs-state--info .kiosk-fs-bar > span{
+  background: linear-gradient(90deg, var(--kk-primary-soft), var(--kk-primary));
+}

@@ -1,0 +1,327 @@
+/* =========================================================
+   LibLocker — Kiosk On-Screen Keypad
+   Touch-only inputs (numeric + alpha) for 10.1" 1280x800.
+   Loaded after styles.css + kiosk_redesign.css.
+
+   Public hooks:
+     <input data-kk-keypad="numeric"> -> 12-key digits keypad
+     <input data-kk-keypad="alpha">   -> compact QWERTY keypad
+     <input class="uppercase-input">  -> visual ALL CAPS
+     <input class="numeric-input">    -> visual digits only
+
+   Color palette: same as kiosk_redesign.css (--kk-* tokens).
+========================================================= */
+
+:root{
+  --kkp-bg:        #ffffff;
+  --kkp-surface:   linear-gradient(180deg, #ffffff 0%, #f5fbf6 100%);
+  --kkp-key:       #ffffff;
+  --kkp-key-text:  #111418;
+  --kkp-key-hover: #f0f8f1;
+  --kkp-key-press: #e2efe5;
+  --kkp-key-line:  rgba(47,125,68,0.18);
+  --kkp-accent:    #2f7d44;
+  --kkp-accent-2:  #4fa56a;
+  --kkp-danger:    #b53636;
+  --kkp-shadow:    0 -18px 48px rgba(20,40,28,0.12);
+  --kkp-radius:    18px;
+  --kkp-key-h:     86px;
+  --kkp-gap:       10px;
+  --kkp-ease:      cubic-bezier(.4, 0, .2, 1);
+}
+
+/* =========================================================
+   INPUT VISUAL STATES
+========================================================= */
+
+.uppercase-input{
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.uppercase-input::placeholder{
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.numeric-input{
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+
+/* Active-input ring — visual cue while keypad is open */
+.kk-input-active{
+  border-color: var(--kkp-accent) !important;
+  box-shadow:
+    0 0 0 4px rgba(47,125,68,0.18),
+    0 14px 32px rgba(47,125,68,0.10) !important;
+}
+
+/* =========================================================
+   KEYPAD CONTAINER
+========================================================= */
+
+.kk-keypad{
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 100%);
+  width: min(1180px, 96vw);
+  padding: 18px 20px 22px;
+  background: var(--kkp-surface);
+  border: 1px solid var(--kkp-key-line);
+  border-bottom: none;
+  border-radius: var(--kkp-radius) var(--kkp-radius) 0 0;
+  box-shadow: var(--kkp-shadow);
+  z-index: 9000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform .28s var(--kkp-ease),
+    opacity   .22s var(--kkp-ease),
+    visibility 0s linear .28s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.kk-keypad.is-open{
+  transform: translate(-50%, 0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    transform .32s var(--kkp-ease),
+    opacity   .22s var(--kkp-ease),
+    visibility 0s linear 0s;
+}
+
+/* Soft top handle / accent stripe */
+.kk-keypad::before{
+  content: "";
+  display: block;
+  width: 56px;
+  height: 5px;
+  margin: 0 auto 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--kkp-accent-2), var(--kkp-accent));
+  opacity: 0.85;
+}
+
+/* The mirror-display row at the top of the keypad: shows the
+   currently-typed value so the user can see input under their hand. */
+.kk-keypad-display{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  margin: 0 0 14px;
+  background: rgba(47,125,68,0.06);
+  border: 1px solid rgba(47,125,68,0.16);
+  border-radius: 12px;
+  min-height: 48px;
+}
+.kk-keypad-display-label{
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: rgba(47,125,68,0.85);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.kk-keypad-display-value{
+  flex: 1;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111418;
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
+  min-height: 24px;
+}
+.kk-keypad-display-value:empty::after{
+  content: attr(data-placeholder);
+  color: rgba(0,0,0,0.32);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+.kk-keypad-close{
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(47,125,68,0.10);
+  color: var(--kkp-accent);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s var(--kkp-ease), transform .1s var(--kkp-ease);
+}
+.kk-keypad-close:hover{ background: rgba(47,125,68,0.18); }
+.kk-keypad-close:active{ transform: scale(.94); }
+
+/* =========================================================
+   KEYS — shared
+========================================================= */
+.kk-key{
+  position: relative;
+  height: var(--kkp-key-h);
+  border: 1.5px solid var(--kkp-key-line);
+  border-radius: 14px;
+  background: var(--kkp-key);
+  color: var(--kkp-key-text);
+  font-size: 30px;
+  font-weight: 700;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  box-shadow: 0 4px 0 rgba(20,40,28,0.06), 0 8px 18px rgba(20,40,28,0.06);
+  transition:
+    background .12s var(--kkp-ease),
+    transform .08s var(--kkp-ease),
+    box-shadow .12s var(--kkp-ease),
+    border-color .12s var(--kkp-ease);
+}
+.kk-key:hover{
+  background: var(--kkp-key-hover);
+  border-color: rgba(47,125,68,0.30);
+}
+.kk-key:active,
+.kk-key.is-press{
+  transform: scale(.95) translateY(1px);
+  background: var(--kkp-key-press);
+  box-shadow: 0 2px 0 rgba(20,40,28,0.06), 0 4px 12px rgba(20,40,28,0.05);
+}
+
+.kk-key--ghost{
+  background: rgba(47,125,68,0.10);
+  color: var(--kkp-accent);
+  border-color: rgba(47,125,68,0.28);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.kk-key--ghost:hover{ background: rgba(47,125,68,0.18); }
+
+.kk-key--danger{
+  color: var(--kkp-danger);
+  border-color: rgba(181,54,54,0.30);
+  background: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.kk-key--danger:hover{ background: rgba(181,54,54,0.06); }
+
+.kk-key--solid{
+  background: linear-gradient(180deg, #3a9555 0%, var(--kkp-accent) 100%);
+  color: #fff;
+  border: 1px solid rgba(31,90,48,0.45);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  box-shadow: 0 6px 18px rgba(47,125,68,0.30), inset 0 1px 0 rgba(255,255,255,0.20);
+}
+.kk-key--solid:hover{ filter: brightness(1.04); }
+
+.kk-key--icon svg{
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.5;
+}
+
+/* =========================================================
+   NUMERIC GRID
+========================================================= */
+.kk-keypad--numeric .kk-keys{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: var(--kkp-key-h);
+  gap: var(--kkp-gap);
+  max-width: 540px;
+  margin: 0 auto;
+}
+.kk-keypad--numeric .kk-key--done{
+  grid-column: span 3;
+  height: 72px;
+}
+
+/* =========================================================
+   ALPHA GRID  (compact QWERTY)
+========================================================= */
+.kk-keypad--alpha .kk-keys{
+  display: grid;
+  gap: var(--kkp-gap);
+  grid-auto-rows: var(--kkp-key-h);
+}
+
+/* Three letter rows (10 / 9 / 7 + backspace) */
+.kk-row{
+  display: grid;
+  gap: var(--kkp-gap);
+}
+.kk-row--r1{ grid-template-columns: repeat(10, 1fr); }
+.kk-row--r2{ grid-template-columns: repeat(9, 1fr);  padding: 0 calc((100% / 20)); }
+.kk-row--r3{ grid-template-columns: 1.4fr repeat(7, 1fr) 1.4fr; }
+.kk-row--r4{
+  grid-template-columns: 1fr 1fr 4fr 1fr 1.4fr;
+  /* clear  .   space    -    Done   */
+}
+
+.kk-keypad--alpha .kk-key{
+  font-size: 26px;
+  font-weight: 700;
+  height: var(--kkp-key-h);
+}
+
+/* =========================================================
+   RESPONSIVE — fit on 1280x800 with header + form above
+========================================================= */
+@media (max-height: 820px){
+  :root{
+    --kkp-key-h: 72px;
+    --kkp-gap:   8px;
+  }
+  .kk-keypad{ padding: 14px 16px 18px; }
+  .kk-keypad-display{ margin-bottom: 10px; min-height: 42px; }
+  .kk-keypad-display-value{ font-size: 20px; }
+  .kk-key{ font-size: 26px; }
+  .kk-keypad--alpha .kk-key{ font-size: 22px; }
+  .kk-keypad--numeric .kk-key--done{ height: 60px; }
+}
+
+@media (max-height: 700px){
+  :root{
+    --kkp-key-h: 62px;
+    --kkp-gap:   6px;
+  }
+  .kk-keypad{ padding: 10px 14px 14px; }
+  .kk-key{ font-size: 22px; border-radius: 12px; }
+  .kk-keypad--alpha .kk-key{ font-size: 19px; }
+}
+
+/* Push the page content up when keypad is open so inputs aren't covered.
+   The JS toggles `.kk-keypad-open` on <body>. */
+body.kk-keypad-open .kiosk-stepper,
+body.kk-keypad-open .stepper{
+  visibility: hidden;
+}
+body.kk-keypad-open .help-btn,
+body.kk-keypad-open .lang-pill{
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s var(--kkp-ease);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .kk-keypad{ transition: none; }
+  .kk-key{ transition: none; }
+}
