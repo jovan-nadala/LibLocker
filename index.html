@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibLocker Kiosk</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <!-- Soft background glow -->
+  <div class="bg-glow"></div>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+            <img class="brand-logo-img" src="assets/img/logo.png" alt="LibLocker Logo">
+        </div>
+    </div>
+
+      </div>
+    </div>
+
+    <div class="clock">
+      <div id="time" class="clock-time">14:30</div>
+      <div id="date" class="clock-date">Jan 15, 2026</div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="wrap">
+    <section class="hero">
+      <h1 class="title">LibLocker</h1>
+      <p class="subtitle">Self-Service E-Library Locker System. Select an action below to begin.</p>
+    </section>
+
+    <!-- Action Cards -->
+    <section class="actions" aria-label="Main actions">
+
+  <!-- Register -->
+<a href="pages/register.html" class="action-card" data-action="register">
+  <div class="card-inner">
+    <div class="card-icon">
+      <img class="card-icon-img" src="assets/img/register.png" alt="Register">
+    </div>
+    <div class="card-title">Register</div>
+    <div class="card-desc">Create a new account to use lockers</div>
+  </div>
+</a>
+
+  <!-- Store Bag -->
+  <a href="pages/store_select.html" class="action-card action-card--active" data-action="store">
+      <div class="card-inner">
+          <div class="card-icon">
+              <img class="card-icon-img" src="assets/img/deposit.png" alt="Store Bag">
+          </div>
+
+          <div class="card-title">Store Bag</div>
+          <div class="card-desc">Secure your belonging for the day.</div>
+      </div>
+  </a>
+
+  <!-- Retrieve Bag -->
+  <a href="pages/retrieve.html" class="action-card" data-action="retrieve">
+      <div class="card-inner">
+          <div class="card-icon">
+              <img class="card-icon-img" src="assets/img/retrieve.png" alt="Retrieve Bag">
+          </div>
+
+          <div class="card-title">Retrieve Bag</div>
+          <div class="card-desc">Collect your stored items using your access code or ID.</div>
+      </div>
+  </a>
+
+</section>
+
+
+    <!-- Stepper -->
+    <section class="stepper" aria-label="Progress steps">
+      <div class="stepper-line">
+        <div class="stepper-progress"></div>
+        <div class="stepper-dot stepper-dot--active" style="left: 0%"></div>
+        <div class="stepper-dot" style="left: 50%"></div>
+        <div class="stepper-dot" style="left: 100%"></div>
+      </div>
+      <div class="stepper-labels">
+        <div class="stepper-label stepper-label--active"><span class="num">1.</span> Select Action</div>
+        <div class="stepper-label"><span class="num">2.</span> RFID Verification</div>
+        <div class="stepper-label"><span class="num">3.</span> Complete Process</div>
+      </div>
+    </section>
+
+    <!-- RFID Info Card -->
+    <section class="rfid-hint" aria-label="RFID instruction">
+  <div class="rfid-icon" aria-hidden="true">
+    <img class="rfid-icon-img" src="assets/img/icon.png" alt="RFID Tap Icon">
+  </div>
+
+      <div class="rfid-text">
+        <div class="rfid-title">After selecting an action, tap your</div>
+        <div class="rfid-title">RFID key fob to continue.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom right controls -->
+  <div class="help-btn" role="button" tabindex="0" aria-label="Help">
+    <span>?</span>
+  </div>
+
+  <div class="lang-pill" aria-label="Language selector">
+    <span class="lang-label">Language:</span>
+    <select id="langSelect" aria-label="Select language">
+      <option selected>English</option>
+      <option>Filipino</option>
+    </select>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
